@@ -31,7 +31,9 @@ namespace Tools.UI.Card
             //fsm
             Fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
 
-			UseTargetGround = true;
+			int dice = UnityEngine.Random.Range(0, 2);
+			
+			UseTargetGround = dice == 0 ? false : true;
         }
 
         void Update()
