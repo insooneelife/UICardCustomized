@@ -25,8 +25,10 @@ namespace Tools.UI.Card
 
         public void Sort(IUiCard[] cards)
         {
-            if (cards == null)
-                throw new ArgumentException("Can't sort a card list null");
+			if (cards == null || cards.Length == 0)
+			{
+				return;
+			}
 
             var lastPos = cards.Length - 1;
             var lastCard = cards[lastPos];
@@ -42,6 +44,7 @@ namespace Tools.UI.Card
                 var card = cards[i];
                 card.MoveToWithZ(backGravPos, parameters.MovementSpeed);
             }
+			
         }
 
         //--------------------------------------------------------------------------------------------------------------

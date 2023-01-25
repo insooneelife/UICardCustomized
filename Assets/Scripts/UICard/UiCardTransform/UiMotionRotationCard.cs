@@ -18,7 +18,7 @@ namespace Tools.UI.Card
         {
             Handler.transform.eulerAngles = Target;
             IsOperating = false;
-            OnFinishMotion?.Invoke();
+            OnFinishMotion?.Invoke(Handler);
         }
 
         protected override void KeepMotion()

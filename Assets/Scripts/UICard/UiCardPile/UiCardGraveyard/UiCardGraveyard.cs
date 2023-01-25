@@ -14,11 +14,18 @@ namespace Tools.UI.Card
         [SerializeField] [Tooltip("World point where the graveyard is positioned")]
         Transform graveyardPosition;
 
-        //--------------------------------------------------------------------------------------------------------------
+		[SerializeField]
+		Pool.SetPooler cardPool;
 
-        IUiPlayerHand PlayerHand { get; set; }
+		//--------------------------------------------------------------------------------------------------------------
+
+		IUiPlayerHand PlayerHand { get; set; }
 
 
+		private void OnCardArrived(IUiCard card)
+		{
+			RemoveCard(card);
+		}
 
 		private void OnCardPlayed(IUiCard card)
 		{
@@ -48,8 +55,6 @@ namespace Tools.UI.Card
             base.Awake();
             PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
             PlayerHand.OnCardPlayed += OnCardPlayed;
-
-			//PlayerHand.OnCardPlayed += AddCard;
 		}
 
         #endregion
@@ -71,7 +76,10 @@ namespace Tools.UI.Card
             card.transform.SetParent(graveyardPosition);
             card.Discard();
             NotifyPileChange();
-        }
+
+			card.Movement.OnFinishMotion += OnCardArrived;
+
+		}
 
 
         /// <summary>
@@ -83,8 +91,16 @@ namespace Tools.UI.Card
             if (card == null)
                 throw new ArgumentNullException("Null is not a valid argument.");
 
-            Cards.Remove(card);
-            NotifyPileChange();
+			card.Movement.OnFinishMotion -= OnCardArrived;
+
+			card.Destroy();
+
+			Cards.Remove(card);
+
+			cardPool.EnqueueObject(card.gameObject);
+
+
+			NotifyPileChange();
         }
 
         #endregion

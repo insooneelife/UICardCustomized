@@ -15,7 +15,12 @@ namespace Tools.UI.Card
 
         Vector3 StartScale { get; set; }
 
-        //--------------------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------------------------------
+
+		private void OnFinishMotion(IUiCard card)
+		{
+			GoToIdle();
+		}
 
         #region Operations
 
@@ -24,12 +29,18 @@ namespace Tools.UI.Card
             CachePreviousValue();
             DisableCollision();
             SetScale();
-            Handler.Movement.OnFinishMotion += GoToIdle;
+            Handler.Movement.OnFinishMotion += OnFinishMotion;
         }
 
-        public override void OnExitState() => Handler.Movement.OnFinishMotion -= GoToIdle;
+		public override void OnExitState()
+		{ 
+			Handler.Movement.OnFinishMotion -= OnFinishMotion;
+		}
 
-        void GoToIdle() => Handler.Enable();
+		void GoToIdle()
+		{ 
+			Handler.Enable();
+		} 
 
         void CachePreviousValue()
         {
@@ -39,6 +50,8 @@ namespace Tools.UI.Card
 
         void SetScale() => Handler.ScaleTo(StartScale, Parameters.ScaleSpeed);
 
+
+		
         #endregion
     }
 }

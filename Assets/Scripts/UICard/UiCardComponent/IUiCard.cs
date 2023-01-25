@@ -16,8 +16,10 @@ namespace Tools.UI.Card
 		bool IsDisabled { get; }
 		bool IsPlayer { get; }
 		
-		EnumTypes.CardHowToUses CardHowToUse { get; } 
+		EnumTypes.CardHowToUses CardHowToUse { get; }
 
+		void Init();
+		void Destroy();
 
 		void Disable();
         void Enable();

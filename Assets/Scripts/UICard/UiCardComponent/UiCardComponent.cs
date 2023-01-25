@@ -12,7 +12,7 @@ namespace Tools.UI.Card
 
         #region Unity Callbacks
 
-        void Awake()
+        public void Init()
         {
             //components
             MyTransform = transform;
@@ -34,7 +34,14 @@ namespace Tools.UI.Card
 			int dice = UnityEngine.Random.Range(0, 2);
 			
 			CardHowToUse = dice == 0 ? EnumTypes.CardHowToUses.Normal : EnumTypes.CardHowToUses.TargetGround;
+
+			GetComponent<UiTargetLineController>().Init(this);
         }
+
+		public void Destroy()
+		{
+			
+		}
 
         void Update()
         {
@@ -136,9 +143,12 @@ namespace Tools.UI.Card
 		{ 
 			Fsm.Draw();
 		}
-			
 
-        public void Discard() => Fsm.Discard();
+
+		public void Discard() 
+		{ 
+			Fsm.Discard();
+		}
 
 		public void Play() 
 		{

@@ -19,7 +19,7 @@ MonoBehaviour:
   hoverSpeed: 17.7
   height: 0.09116191
   spacing: -2.5789328
-  bentAngle: 28.198751
+  bentAngle: 0
   rotationSpeed: 1.052676
   rotationSpeedP2: 630.26337
   movementSpeed: 9.68

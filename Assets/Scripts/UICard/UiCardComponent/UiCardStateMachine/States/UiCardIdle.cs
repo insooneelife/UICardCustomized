@@ -17,9 +17,14 @@ namespace Tools.UI.Card
 
         Vector3 DefaultSize { get; }
 
-        //--------------------------------------------------------------------------------------------------------------
+		private void OnFinishMotion(IUiCard card)
+		{
+			Enable();
+		}
 
-        public override void OnEnterState()
+		//--------------------------------------------------------------------------------------------------------------
+
+		public override void OnEnterState()
         {
             Handler.Input.OnPointerDown += OnPointerDown;
             Handler.Input.OnPointerEnter += OnPointerEnter;
@@ -27,7 +32,7 @@ namespace Tools.UI.Card
             if (Handler.Movement.IsOperating)
             {
                 DisableCollision();
-                Handler.Movement.OnFinishMotion += Enable;
+                Handler.Movement.OnFinishMotion += OnFinishMotion;
             }
             else			
             {
@@ -42,7 +47,7 @@ namespace Tools.UI.Card
         {
             Handler.Input.OnPointerDown -= OnPointerDown;
             Handler.Input.OnPointerEnter -= OnPointerEnter;
-            Handler.Movement.OnFinishMotion -= Enable;
+            Handler.Movement.OnFinishMotion -= OnFinishMotion;
         }
 
         //--------------------------------------------------------------------------------------------------------------

@@ -22,7 +22,10 @@ namespace Tools.UI.Card
         [SerializeField] [Tooltip("Game view transform")]
         Transform gameView;
 
-        IUiPlayerHand PlayerHand { get; set; }
+		[SerializeField]
+		Pool.SetPooler cardPool;
+
+		IUiPlayerHand PlayerHand { get; set; }
 
         #endregion
 
@@ -50,11 +53,20 @@ namespace Tools.UI.Card
 		
         public void DrawCard()
         {
-            //TODO: Consider replace Instantiate by an Object Pool Pattern
-            var cardGo = Instantiate(cardPrefabCs, gameView);
-            cardGo.name = "Card_" + Count;
-            var card = cardGo.GetComponent<IUiCard>();
-            card.transform.position = deckPosition.position;
+			//TODO: Consider replace Instantiate by an Object Pool Pattern
+
+			var cardPoolable = cardPool.Dequeue();
+
+
+			//var cardGo = Instantiate(cardPrefabCs, gameView);
+			cardPoolable.name = "Card_" + Count;
+			cardPoolable.transform.SetParent(gameView);
+			cardPoolable.gameObject.SetActive(true);
+
+			var card = cardPoolable.GetComponent<IUiCard>();
+			card.Init();
+			
+			card.transform.position = deckPosition.position;
             Count++;
             PlayerHand.AddCard(card);
         }
@@ -63,7 +75,7 @@ namespace Tools.UI.Card
         {
             if (PlayerHand.Cards.Count > 0)
             {
-                var randomCard = PlayerHand.Cards.RandomItem();
+                var randomCard = PlayerHand.Cards.Random();
                 PlayerHand.PlayCard(randomCard);
             }
         }

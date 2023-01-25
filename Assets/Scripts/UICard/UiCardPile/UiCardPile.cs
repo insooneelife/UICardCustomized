@@ -115,10 +115,16 @@ namespace Tools.UI.Card
             Cards.Clear();
         }
 
-        /// <summary>
-        ///     Notify all listeners of this pile that some change has been made.
-        /// </summary>
-        public void NotifyPileChange() => onPileChanged?.Invoke(Cards.ToArray());
+		/// <summary>
+		///     Notify all listeners of this pile that some change has been made.
+		/// </summary>
+		public void NotifyPileChange()
+		{
+			if (Cards.Count > 0)
+			{ 
+				onPileChanged?.Invoke(Cards.ToArray());
+			}
+		} 
 
         #endregion
 

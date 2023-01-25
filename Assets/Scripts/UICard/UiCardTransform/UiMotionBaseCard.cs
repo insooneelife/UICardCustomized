@@ -9,7 +9,7 @@ namespace Tools.UI.Card
         /// <summary>
         ///     Dispatches when the motion ends.
         /// </summary>
-        public Action OnFinishMotion = () => { };
+        public Action<IUiCard> OnFinishMotion = (IUiCard card) => { };
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ namespace Tools.UI.Card
         /// <summary>
         ///     Ends the motion and dispatch motion ends.
         /// </summary>
-        protected virtual void OnMotionEnds() => OnFinishMotion?.Invoke();
+        protected virtual void OnMotionEnds() => OnFinishMotion?.Invoke(Handler);
 
         /// <summary>
         ///     Keep the motion on update.

@@ -25,10 +25,8 @@ namespace Tools.UI.Card
 		private IUiCard _card;
 
 
-		public void Awake()
+		public void Init(IUiCard card)
 		{
-			IUiCard card = GetComponent<IUiCard>();
-
 			_card = card;			
 			_camera = card.MainCamera;
 			_line = gameObject.GetComponent<LineRenderer>();
@@ -40,7 +38,15 @@ namespace Tools.UI.Card
 			_line.startColor = Color.white;
 			_line.endColor = Color.white;
 
+			AddEventHandlers();
 		}
+
+		private void OnDisable()
+		{
+			RemoveEventHandlers();
+			_card = null;
+		}
+
 
 		public void Show()
 		{
@@ -94,30 +100,26 @@ namespace Tools.UI.Card
 				Hide();
 			}
 		}
-
-		private void OnEnable()
-		{
-			AddEventHandlers();
-		}
-
-
-		private void OnDisable()
-		{
-			RemoveEventHandlers();
-		}
+				
 
 		private void AddEventHandlers()
 		{
-			_card.Input.OnBeginDrag += OnBeginDrag;
-			_card.Input.OnEndDrag += OnEndDrag;
-			_card.Input.OnDrag += OnDrag;
+			if (_card != null)
+			{ 
+				_card.Input.OnBeginDrag += OnBeginDrag;
+				_card.Input.OnEndDrag += OnEndDrag;
+				_card.Input.OnDrag += OnDrag;
+			}
 		}
 
 		private void RemoveEventHandlers()
 		{
-			_card.Input.OnBeginDrag += OnBeginDrag;
-			_card.Input.OnEndDrag += OnEndDrag;
-			_card.Input.OnDrag += OnDrag;
+			if (_card != null)
+			{
+				_card.Input.OnBeginDrag += OnBeginDrag;
+				_card.Input.OnEndDrag += OnEndDrag;
+				_card.Input.OnDrag += OnDrag;
+			}
 		}
 	}
 
