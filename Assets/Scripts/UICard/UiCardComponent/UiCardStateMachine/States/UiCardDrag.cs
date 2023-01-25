@@ -38,7 +38,7 @@ namespace Tools.UI.Card
 
 		public override void OnUpdate()
 		{
-			if (Handler.UseTargetGround)
+			if (Handler.CardHowToUse == EnumTypes.CardHowToUses.TargetGround)
 			{
 			}
 			else

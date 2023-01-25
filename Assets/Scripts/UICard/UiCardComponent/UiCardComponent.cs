@@ -33,7 +33,7 @@ namespace Tools.UI.Card
 
 			int dice = UnityEngine.Random.Range(0, 2);
 			
-			UseTargetGround = dice == 0 ? false : true;
+			CardHowToUse = dice == 0 ? EnumTypes.CardHowToUses.Normal : EnumTypes.CardHowToUses.TargetGround;
         }
 
         void Update()
@@ -91,7 +91,7 @@ namespace Tools.UI.Card
         public bool IsDisabled => Fsm.IsCurrent<UiCardDisable>();
         public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
 
-		public bool UseTargetGround { get; set; }
+		public EnumTypes.CardHowToUses CardHowToUse { get; set; }
 
 		#endregion
 
