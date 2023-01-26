@@ -50,7 +50,7 @@ namespace UICard
 		private void SetPosition()
 		{
 			Camera camera = _handler.MainCamera;
-			Vector3 halfCardHeight = new Vector3(0, _handler.Renderer.bounds.size.y / 2);
+			Vector3 halfCardHeight = new Vector3(0, _handler.Bounds.size.y / 2);
 			Vector3 bottomEdge = _handler.MainCamera.ScreenToWorldPoint(Vector3.zero);
 			Vector3 topEdge = _handler.MainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height));
 			int edgeFactor = _handler.transform.CloserEdge(camera, Screen.width, Screen.height);
@@ -96,7 +96,9 @@ namespace UICard
 		private void OnPointerExit(PointerEventData obj)
 		{
 			if (Fsm.IsCurrent(this))
+			{ 
 				_handler.Enable();
+			}
 		}
 
 		private void OnPointerDown(PointerEventData eventData)
@@ -113,7 +115,7 @@ namespace UICard
 
 		public override void OnEnterState()
 		{
-			MakeRenderFirst();
+			_handler.MakeRenderFirst();
 			SubscribeInput();
 			CachePreviousValues();
 			SetScale();
@@ -125,7 +127,7 @@ namespace UICard
 		{
 			ResetValues();
 			UnsubscribeInput();
-			DisableCollision();
+			_handler.DisableCollision();
 		}
 
 		#endregion

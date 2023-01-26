@@ -55,8 +55,8 @@ namespace UICard
 			_startEuler = _handler.transform.eulerAngles;
 
 			_handler.RotateTo(Vector3.zero, Parameters.RotationSpeed);
-			MakeRenderFirst();
-			RemoveAllTransparency();
+			_handler.MakeRenderFirst();
+			_handler.RemoveAllTransparency();
 		}
 
 		public override void OnExitState()
@@ -65,7 +65,7 @@ namespace UICard
 			if (_handler.transform)
 			{
 				_handler.RotateTo(_startEuler, Parameters.RotationSpeed);
-				MakeRenderNormal();
+				_handler.MakeRenderNormal();
 			}
 		}
 

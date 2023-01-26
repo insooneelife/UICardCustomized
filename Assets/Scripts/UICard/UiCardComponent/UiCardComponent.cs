@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace UICard
@@ -8,6 +9,9 @@ namespace UICard
 	[RequireComponent(typeof(IMouseInput))]
 	public class UiCardComponent : MonoBehaviour, IUiCard
 	{
+		const int LayerToRenderNormal = 0;
+		const int LayerToRenderTop = 1;
+
 		[SerializeField]
 		public UiCardParameters _cardConfigsParameters;
 
@@ -16,11 +20,11 @@ namespace UICard
 
 		private UiCardHandFsm _fsm;
 		private Collider _collider;
-		private SpriteRenderer[] _renderers;
-		private SpriteRenderer _renderer;
 		private Rigidbody _rigidbody;
 		private IMouseInput _input;
 
+		private SpriteRenderer[] _renderers;
+		private SpriteRenderer _renderer;
 
 		private EnumTypes.CardHowToUses _cardHowToUse;
 
@@ -28,7 +32,7 @@ namespace UICard
 		private UiMotionBaseCard _movement;
 		private UiMotionBaseCard _rotation;
 		private UiMotionBaseCard _scale;
-
+		
 
 		public string Name
 		{
@@ -80,17 +84,12 @@ namespace UICard
 		public Camera MainCamera 
 		{
 			get { return Camera.main; }
+		}
+
+		public Bounds Bounds 
+		{
+			get { return _renderer.bounds; }
 		} 
-
-		public SpriteRenderer[] Renderers 
-		{
-			get { return _renderers; }
-		}
-
-		public SpriteRenderer Renderer 
-		{
-			get { return _renderer; }
-		}
 
 		public Collider Collider
 		{
@@ -163,6 +162,67 @@ namespace UICard
 			_scale.Clear();
 			_movement.Clear();
 			_rotation.Clear();
+		}
+
+		// Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
+		public void MakeRenderFirst()
+		{
+			for (int i = 0; i < _renderers.Length; i++)
+			{
+				_renderers[i].sortingOrder = LayerToRenderTop;
+			}
+		}
+
+		
+
+		// Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
+		public void MakeRenderNormal()
+		{
+			for (int i = 0; i < _renderers.Length; i++)
+			{
+				if (_renderers[i])
+				{
+					_renderers[i].sortingOrder = LayerToRenderNormal;
+				}
+			}
+		}
+
+
+		public void ApplyAllTransparency()
+		{
+			foreach (var renderer in _renderers)
+			{
+				var myColor = renderer.color;
+				myColor.a = _cardConfigsParameters.DisabledAlpha;
+				renderer.color = myColor;
+			}
+		}
+
+		// Remove any alpha channel in all renderers.
+		public void RemoveAllTransparency()
+		{
+			foreach (var renderer in _renderers)
+			{
+				if (renderer != null)
+				{
+					var myColor = renderer.color;
+					myColor.a = 1;
+					renderer.color = myColor;
+				}
+			}
+		}
+
+		// Disables the collision with this card.
+		public void DisableCollision()
+		{
+			_collider.enabled = false;
+		}
+
+
+		// Enables the collision with this card.
+		public void EnableCollision()
+		{
+			_collider.enabled = true;
 		}
 
 

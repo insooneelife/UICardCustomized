@@ -28,7 +28,7 @@ namespace UICard
 
 			if (_handler.Movement.IsOperating)
 			{
-				DisableCollision();
+				_handler.DisableCollision();
 				_handler.Movement.onFinishMotion += OnFinishMotion;
 			}
 			else
@@ -36,7 +36,7 @@ namespace UICard
 				Enable();
 			}
 
-			MakeRenderNormal();
+			_handler.MakeRenderNormal();
 			_handler.ScaleTo(_defaultSize, Parameters.ScaleSpeed);
 		}
 

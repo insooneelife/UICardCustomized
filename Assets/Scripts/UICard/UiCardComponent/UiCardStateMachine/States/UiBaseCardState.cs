@@ -7,9 +7,6 @@ namespace UICard
 	// Base UI Card State.
 	public abstract class UiBaseCardState : IState
 	{
-		const int LayerToRenderNormal = 0;
-		const int LayerToRenderTop = 1;
-
 		protected IUiCard _handler;
 		protected UiCardParameters _parameters;
 		protected BaseStateMachine _fsm;
@@ -45,45 +42,24 @@ namespace UICard
 
 
 
-		// Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
-		protected virtual void MakeRenderFirst()
-		{
-			for (int i = 0; i < _handler.Renderers.Length; i++)
-			{ 
-				_handler.Renderers[i].sortingOrder = LayerToRenderTop;
-			}
-		}
-
-
-
-		// Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
-		protected virtual void MakeRenderNormal()
-		{
-			for (int i = 0; i < _handler.Renderers.Length; i++)
-			{
-				if (_handler.Renderers[i])
-				{ 
-					_handler.Renderers[i].sortingOrder = LayerToRenderNormal;
-				}
-			}
-		}
+		
 
 		// Enables the card entirely. Collision, Rigidybody and adds Alpha.
 
 		protected void Enable()
 		{
-			if (_handler.Collider)
-			{ 
-				EnableCollision();
+			if (_handler.Collider != null)
+			{
+				_handler.EnableCollision();
 			}
 
-			if (_handler.Rigidbody)
+			if (_handler.Rigidbody != null)
 			{ 
 				_handler.Rigidbody.Sleep();
 			}
 
-			MakeRenderNormal();
-			RemoveAllTransparency();
+			_handler.MakeRenderNormal();
+			_handler.RemoveAllTransparency();
 		}
 
 
@@ -91,50 +67,12 @@ namespace UICard
 
 		protected virtual void Disable()
 		{
-			DisableCollision();
+			_handler.DisableCollision();
 			_handler.Rigidbody.Sleep();
-			MakeRenderNormal();
-			
-			foreach (var renderer in _handler.Renderers)
-			{
-				var myColor = renderer.color;
-				myColor.a = Parameters.DisabledAlpha;
-				renderer.color = myColor;
-			}
+			_handler.MakeRenderNormal();
+			_handler.ApplyAllTransparency();
 		}
-
-
-		// Disables the collision with this card.
-
-		protected virtual void DisableCollision()
-		{
-			_handler.Collider.enabled = false;
-		}
-
-
-		// Enables the collision with this card.
-
-		protected virtual void EnableCollision()
-		{
-			_handler.Collider.enabled = true;
-		}
-
-
-		// Remove any alpha channel in all renderers.
-		protected void RemoveAllTransparency()
-		{
-			foreach (var renderer in _handler.Renderers)
-			{ 
-				if (renderer != null)
-				{
-					var myColor = renderer.color;
-					myColor.a = 1;
-					renderer.color = myColor;
-				}
-			}
-		}
-
-
+		
 		#region FSM
 
 		public void OnInitialize()

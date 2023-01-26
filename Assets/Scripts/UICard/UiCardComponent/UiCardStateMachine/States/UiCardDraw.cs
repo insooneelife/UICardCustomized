@@ -47,7 +47,7 @@ namespace UICard
 		public override void OnEnterState()
 		{
 			CachePreviousValue();
-			DisableCollision();
+			_handler.DisableCollision();
 			SetScale();
 			_handler.Movement.onFinishMotion += OnFinishMotion;
 		}
