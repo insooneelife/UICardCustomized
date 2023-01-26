@@ -5,145 +5,131 @@ using UnityEngine.EventSystems;
 
 namespace UICard
 {
-    public class UiCardHover : UiBaseCardState
-    {
-		//--------------------------------------------------------------------------------------------------------------
+	public class UiCardHover : UiBaseCardState
+	{
+		private Vector3 _startPosition;
+		private Vector3 _startEuler;
+		private Vector3 _startScale;
 
-		public UiCardHover(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters) : base(handler, fsm,
-            parameters)
-        {
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        void OnPointerExit(PointerEventData obj)
-        {
-            if (Fsm.IsCurrent(this))
-                Handler.Enable();
-        }
-
-        void OnPointerDown(PointerEventData eventData)
-        {
-			if (Fsm.IsCurrent(this))
-			{
-                Handler.Select();
-			}
-        }
+		public UiCardHover(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters) 
+			:
+			base(handler, fsm, parameters)
+		{}
 
 		
+		private void ResetValues()
+		{
+			float rotationSpeed = _handler.IsPlayer ? _parameters.RotationSpeed : _parameters.RotationSpeedP2;
 
-
-		//--------------------------------------------------------------------------------------------------------------
-
-		void ResetValues()
-        {
-			var rotationSpeed = Handler.IsPlayer ? Parameters.RotationSpeed : Parameters.RotationSpeedP2;
-
-			if (Handler.CacheBendData != null)
+			if (_handler.CacheBendData != null)
 			{
-				Handler.RotateTo(Handler.CacheBendData.rotateEuler, rotationSpeed);
-				Handler.MoveTo(Handler.CacheBendData.movePosition, Parameters.HoverSpeed);
+				_handler.RotateTo(_handler.CacheBendData.rotateEuler, rotationSpeed);
+				_handler.MoveTo(_handler.CacheBendData.movePosition, _parameters.HoverSpeed);
 			}
 			else
 			{
-				Handler.RotateTo(StartEuler, rotationSpeed);
-				Handler.MoveTo(StartPosition, Parameters.HoverSpeed);
+				_handler.RotateTo(_startEuler, rotationSpeed);
+				_handler.MoveTo(_startPosition, _parameters.HoverSpeed);
 			}
 
-            Handler.ScaleTo(StartScale, Parameters.ScaleSpeed);
-        }
-
-        void SetRotation()
-        {
-            if (Parameters.HoverRotation)
-                return;
-
-            var speed = Handler.IsPlayer ? Parameters.RotationSpeed : Parameters.RotationSpeedP2;
-
-            Handler.RotateTo(Vector3.zero, speed);
-        }
-
-        /// <summary>
-        ///     View Math.
-        /// </summary>
-        void SetPosition()
-        {
-            var camera = Handler.MainCamera;
-            var halfCardHeight = new Vector3(0, Handler.Renderer.bounds.size.y / 2);
-            var bottomEdge = Handler.MainCamera.ScreenToWorldPoint(Vector3.zero);
-            var topEdge = Handler.MainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height));
-            var edgeFactor = Handler.transform.CloserEdge(camera, Screen.width, Screen.height);
-            var myEdge = edgeFactor == 1 ? bottomEdge : topEdge;
-            var edgeY = new Vector3(0, myEdge.y);
-            var currentPosWithoutY = new Vector3(Handler.transform.position.x, 0, Handler.transform.position.z);
-            var hoverHeightParameter = new Vector3(0, Parameters.HoverHeight);
-            var final = currentPosWithoutY + edgeY + (halfCardHeight + hoverHeightParameter) * edgeFactor;
-            Handler.MoveTo(final, Parameters.HoverSpeed);
-        }
-
-        void SetScale()
-        {
-            var currentScale = Handler.transform.localScale;
-            var finalScale = currentScale * Parameters.HoverScale;
-            Handler.ScaleTo(finalScale, Parameters.ScaleSpeed);
-        }
-
-        void CachePreviousValues()
-        {			
-			StartPosition = Handler.transform.position;
-			StartEuler = Handler.transform.eulerAngles;
-            StartScale = Handler.transform.localScale;
-        }
-
-        void SubscribeInput()
-        {
-            Handler.Input.OnPointerExit += OnPointerExit;
-            Handler.Input.OnPointerDown += OnPointerDown;
+			_handler.ScaleTo(_startScale, _parameters.ScaleSpeed);
 		}
 
-        void UnsubscribeInput()
-        {
-            Handler.Input.OnPointerExit -= OnPointerExit;
-            Handler.Input.OnPointerDown -= OnPointerDown;
+		private void SetRotation()
+		{
+			if (_parameters.HoverRotation)
+				return;
+
+			float speed = _handler.IsPlayer ? _parameters.RotationSpeed : _parameters.RotationSpeedP2;
+
+			_handler.RotateTo(Vector3.zero, speed);
 		}
 
-        void CalcEdge()
-        {
-        }
 
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Operations
-
-        public override void OnEnterState()
-        {
-            MakeRenderFirst();
-            SubscribeInput();
-            CachePreviousValues();
-            SetScale();
-            SetPosition();
-            SetRotation();
+		// View Math.
+		private void SetPosition()
+		{
+			Camera camera = _handler.MainCamera;
+			Vector3 halfCardHeight = new Vector3(0, _handler.Renderer.bounds.size.y / 2);
+			Vector3 bottomEdge = _handler.MainCamera.ScreenToWorldPoint(Vector3.zero);
+			Vector3 topEdge = _handler.MainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height));
+			int edgeFactor = _handler.transform.CloserEdge(camera, Screen.width, Screen.height);
+			Vector3 myEdge = edgeFactor == 1 ? bottomEdge : topEdge;
+			Vector3 edgeY = new Vector3(0, myEdge.y);
+			Vector3 currentPosWithoutY = new Vector3(_handler.transform.position.x, 0, _handler.transform.position.z);
+			Vector3 hoverHeightParameter = new Vector3(0, _parameters.HoverHeight);
+			Vector3 final = currentPosWithoutY + edgeY + (halfCardHeight + hoverHeightParameter) * edgeFactor;
+			_handler.MoveTo(final, _parameters.HoverSpeed);
 		}
 
-        public override void OnExitState()
-        {
-            ResetValues();
-            UnsubscribeInput();
-            DisableCollision();
+		private void SetScale()
+		{
+			Vector3 currentScale = _handler.transform.localScale;
+			Vector3 finalScale = currentScale * _parameters.HoverScale;
+			_handler.ScaleTo(finalScale, _parameters.ScaleSpeed);
 		}
 
-        #endregion
+		private void CachePreviousValues()
+		{
+			_startPosition = _handler.transform.position;
+			_startEuler = _handler.transform.eulerAngles;
+			_startScale = _handler.transform.localScale;
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
+		private void SubscribeInput()
+		{
+			_handler.Input.OnPointerExit += OnPointerExit;
+			_handler.Input.OnPointerDown += OnPointerDown;
+		}
 
-        #region Properties
+		private void UnsubscribeInput()
+		{
+			_handler.Input.OnPointerExit -= OnPointerExit;
+			_handler.Input.OnPointerDown -= OnPointerDown;
+		}
 
-        Vector3 StartPosition { get; set; }
-        Vector3 StartEuler { get; set; }
-        Vector3 StartScale { get; set; }
+		private void CalcEdge()
+		{
+		}
 
-        #endregion
+		#region Events Handlers
+		private void OnPointerExit(PointerEventData obj)
+		{
+			if (Fsm.IsCurrent(this))
+				_handler.Enable();
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		private void OnPointerDown(PointerEventData eventData)
+		{
+			if (Fsm.IsCurrent(this))
+			{
+				_handler.Select();
+			}
+		}
+		#endregion Events Handlers
+
+
+		#region FSM
+
+		public override void OnEnterState()
+		{
+			MakeRenderFirst();
+			SubscribeInput();
+			CachePreviousValues();
+			SetScale();
+			SetPosition();
+			SetRotation();
+		}
+
+		public override void OnExitState()
+		{
+			ResetValues();
+			UnsubscribeInput();
+			DisableCollision();
+		}
+
+		#endregion
+
+		
+	}
 }

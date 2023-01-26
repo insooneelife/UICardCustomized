@@ -10,10 +10,10 @@ namespace UICard
 		const int LayerToRenderNormal = 0;
 		const int LayerToRenderTop = 1;
 
-		private IUiCard _handler;
-		private UiCardParameters _parameters;
-		private BaseStateMachine _fsm;
-		private bool _isInitialized;
+		protected IUiCard _handler;
+		protected UiCardParameters _parameters;
+		protected BaseStateMachine _fsm;
+		protected bool _isInitialized;
 
 		protected IUiCard Handler
 		{
@@ -123,7 +123,7 @@ namespace UICard
 
 		#region FSM
 
-		void IState.OnInitialize()
+		public void OnInitialize()
 		{
 		}
 

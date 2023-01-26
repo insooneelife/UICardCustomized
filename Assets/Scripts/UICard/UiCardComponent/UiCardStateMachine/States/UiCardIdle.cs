@@ -4,66 +4,75 @@ using UnityEngine.EventSystems;
 
 namespace UICard
 {
-    /// <summary>
-    ///     UI Card Idle behavior.
-    /// </summary>
-    public class UiCardIdle : UiBaseCardState
-    {
-        //--------------------------------------------------------------------------------------------------------------
 
-        public UiCardIdle(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters) : base(handler, fsm,
-            parameters) =>
-            DefaultSize = Handler.transform.localScale;
+	// UI Card Idle behavior.
+	public class UiCardIdle : UiBaseCardState
+	{
+		private Vector3 _defaultSize;
 
-        Vector3 DefaultSize { get; }
+
+		public UiCardIdle(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters)
+			:
+			base(handler, fsm, parameters)
+		{
+			_defaultSize = _handler.transform.localScale;
+		}
+		
+
+		#region FSM
+
+		public override void OnEnterState()
+		{
+			_handler.Input.OnPointerDown += OnPointerDown;
+			_handler.Input.OnPointerEnter += OnPointerEnter;
+
+			if (_handler.Movement.IsOperating)
+			{
+				DisableCollision();
+				_handler.Movement.OnFinishMotion += OnFinishMotion;
+			}
+			else
+			{
+				Enable();
+			}
+
+			MakeRenderNormal();
+			_handler.ScaleTo(_defaultSize, Parameters.ScaleSpeed);
+		}
+
+		public override void OnExitState()
+		{
+			_handler.Input.OnPointerDown -= OnPointerDown;
+			_handler.Input.OnPointerEnter -= OnPointerEnter;
+			_handler.Movement.OnFinishMotion -= OnFinishMotion;
+		}
+
+		#endregion FSM
+
+
+		#region Event Handlers
+
+		private void OnPointerEnter(PointerEventData obj)
+		{
+			if (_fsm.IsCurrent(this))
+			{ 
+				_handler.Hover();
+			}
+		}
+
+		private void OnPointerDown(PointerEventData eventData)
+		{
+			if (_fsm.IsCurrent(this))
+			{ 
+				_handler.Select();
+			}
+		}
 
 		private void OnFinishMotion(IUiCard card)
 		{
 			Enable();
 		}
 
-		//--------------------------------------------------------------------------------------------------------------
-
-		public override void OnEnterState()
-        {
-            Handler.Input.OnPointerDown += OnPointerDown;
-            Handler.Input.OnPointerEnter += OnPointerEnter;
-
-            if (Handler.Movement.IsOperating)
-            {
-                DisableCollision();
-                Handler.Movement.OnFinishMotion += OnFinishMotion;
-            }
-            else			
-            {
-				Enable();
-            }
-
-            MakeRenderNormal();
-            Handler.ScaleTo(DefaultSize, Parameters.ScaleSpeed);
-        }
-
-        public override void OnExitState()
-        {
-            Handler.Input.OnPointerDown -= OnPointerDown;
-            Handler.Input.OnPointerEnter -= OnPointerEnter;
-            Handler.Movement.OnFinishMotion -= OnFinishMotion;
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        void OnPointerEnter(PointerEventData obj)
-        {
-            if (Fsm.IsCurrent(this))
-                Handler.Hover();
-        }
-
-        void OnPointerDown(PointerEventData eventData)
-        {
-            if (Fsm.IsCurrent(this))
-                Handler.Select();
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		#endregion Event Handlers
+	}
 }

@@ -3,55 +3,61 @@ using UnityEngine;
 
 namespace UICard
 {
-    /// <summary>
-    ///     This state draw the collider of the card.
-    /// </summary>
-    public class UiCardDraw : UiBaseCardState
-    {
-        public UiCardDraw(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters) : base(handler, fsm,
-            parameters)
-        {
-        }
+	//	This state draw the collider of the card.
+	public class UiCardDraw : UiBaseCardState
+	{
+		private Vector3 _startScale;
 
-        Vector3 StartScale { get; set; }
+		public UiCardDraw(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters) 
+			:
+			base(handler, fsm, parameters)
+		{}
+		
+		
+		
 
-		//--------------------------------------------------------------------------------------------------------------
+		private void GoToIdle()
+		{
+			_handler.Enable();
+		}
 
+		private void CachePreviousValue()
+		{
+			_startScale = _handler.transform.localScale;
+			_handler.transform.localScale *= Parameters.StartSizeWhenDraw;
+		}
+
+		private void SetScale()
+		{
+			_handler.ScaleTo(_startScale, Parameters.ScaleSpeed);
+		}
+
+
+
+		#region Events Handlers
 		private void OnFinishMotion(IUiCard card)
 		{
 			GoToIdle();
 		}
+		#endregion Events Handlers
 
-        #region Operations
 
-        public override void OnEnterState()
-        {
-            CachePreviousValue();
-            DisableCollision();
-            SetScale();
-            Handler.Movement.OnFinishMotion += OnFinishMotion;
-        }
+		#region FSM
 
-		public override void OnExitState()
-		{ 
-			Handler.Movement.OnFinishMotion -= OnFinishMotion;
+		public override void OnEnterState()
+		{
+			CachePreviousValue();
+			DisableCollision();
+			SetScale();
+			_handler.Movement.OnFinishMotion += OnFinishMotion;
 		}
 
-		void GoToIdle()
-		{ 
-			Handler.Enable();
-		} 
-
-        void CachePreviousValue()
-        {
-            StartScale = Handler.transform.localScale;
-            Handler.transform.localScale *= Parameters.StartSizeWhenDraw;
-        }
-
-        void SetScale() => Handler.ScaleTo(StartScale, Parameters.ScaleSpeed);
-
-
+		public override void OnExitState()
+		{
+			_handler.Movement.OnFinishMotion -= OnFinishMotion;
+		}
 		
-        #endregion
-    }
+
+		#endregion
+	}
 }

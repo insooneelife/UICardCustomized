@@ -5,80 +5,71 @@ using UnityEngine.EventSystems;
 
 namespace UICard
 {
-    public class UiCardDrag : UiBaseCardState
-    {
-        public UiCardDrag(IUiCard handler, Camera camera, BaseStateMachine fsm, UiCardParameters parameters) : base(
-            handler, fsm, parameters) =>
-            MyCamera = camera;
-        //--------------------------------------------------------------------------------------------------------------
+	public class UiCardDrag : UiBaseCardState
+	{
+		private Vector3 _startEuler;
 
-        Vector3 StartEuler { get; set; }
-        Camera MyCamera { get; }
+		private Camera _camera;
 
-        //--------------------------------------------------------------------------------------------------------------
-
-
-        Vector3 WorldPoint()
-        {
-            var mousePosition = Handler.Input.MousePosition;
-            var worldPoint = MyCamera.ScreenToWorldPoint(mousePosition);
-            return worldPoint;
-        }
-
-        void FollowCursor()
-        {
-            var myZ = Handler.transform.position.z;
-            Handler.transform.position = WorldPoint().WithZ(myZ);
-        }
+		public UiCardDrag(IUiCard handler, Camera camera, BaseStateMachine fsm, UiCardParameters parameters)
+			:
+			base(handler, fsm, parameters)
+		{
+			_camera = camera;
+		}	
 
 
-		//--------------------------------------------------------------------------------------------------------------
+		private Vector3 WorldPoint()
+		{
+			Vector2 mousePosition = _handler.Input.MousePosition;
+			Vector3 worldPoint = _camera.ScreenToWorldPoint(mousePosition);
+			return worldPoint;
+		}
 
-		#region Operations
+		private void FollowCursor()
+		{
+			float myZ = _handler.transform.position.z;
+			_handler.transform.position = WorldPoint().WithZ(myZ);
+		}
+
+		
+		#region FSM
 
 		public override void OnUpdate()
 		{
-			if (Handler.CardHowToUse == EnumTypes.CardHowToUses.TargetGround)
+			if (_handler.CardHowToUse == EnumTypes.CardHowToUses.TargetGround)
 			{
 			}
 			else
-			{ 
+			{
 				FollowCursor();
 			}
 		}
 
-        public override void OnEnterState()
-        {
+		public override void OnEnterState()
+		{
 			//stop any movement
-			Handler.Movement.StopMotion();
+			_handler.Movement.StopMotion();
 
-            //cache old values
-            StartEuler = Handler.transform.eulerAngles;
+			//cache old values
+			_startEuler = _handler.transform.eulerAngles;
 
-            Handler.RotateTo(Vector3.zero, Parameters.RotationSpeed);
-            MakeRenderFirst();
-            RemoveAllTransparency();
+			_handler.RotateTo(Vector3.zero, Parameters.RotationSpeed);
+			MakeRenderFirst();
+			RemoveAllTransparency();
 		}
 
-        public override void OnExitState()
-        {
+		public override void OnExitState()
+		{
 			//reset position and rotation
-			if (Handler.transform)
-            {
-                Handler.RotateTo(StartEuler, Parameters.RotationSpeed);
-                MakeRenderNormal();
-            }
-        }
-		
-
-
+			if (_handler.transform)
+			{
+				_handler.RotateTo(_startEuler, Parameters.RotationSpeed);
+				MakeRenderNormal();
+			}
+		}
 
 		#endregion
-
-		//--------------------------------------------------------------------------------------------------------------
-
-
-
 		
 	}
 }
