@@ -4,34 +4,25 @@ using UnityEngine.EventSystems;
 namespace UICard
 {
 	// Base zones where the user can drop a UI Card.
-	[RequireComponent(typeof(IMouseInput))]
 	public abstract class UiBaseDropZone : MonoBehaviour
 	{
 		protected IUiPlayerHand _cardHand;
-		protected IMouseInput _input;
-
+		
 		protected virtual void Awake()
 		{
 			_cardHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-			_input = GetComponent<IMouseInput>();
-			_input.onPointerUp += OnPointerUp;
-
+			
 			_cardHand.onAddCard += OnAddCard;
 			_cardHand.onRemoveCard += OnRemoveCard;
 		}
 
 		protected virtual void OnDestroy()
 		{
-			_input.onPointerUp -= OnPointerUp;
-
 			_cardHand.onAddCard -= OnAddCard;
 			_cardHand.onRemoveCard -= OnRemoveCard;
 		}
 
-		protected virtual void OnPointerUp(PointerEventData eventData)
-		{
-
-		}
+		protected virtual void OnPointerUp(PointerEventData eventData) {}
 
 
 		private void OnPointerUpInternal(PointerEventData eventData)
@@ -42,7 +33,7 @@ namespace UICard
 			Ray ray = new Ray(worldPos, Vector3.forward);
 			RaycastHit hitInfo;
 			
-			if (collider.Raycast(ray, out hitInfo, 100))
+			if (collider.Raycast(ray, out hitInfo, 10000))
 			{
 				OnPointerUp(eventData);
 			}
