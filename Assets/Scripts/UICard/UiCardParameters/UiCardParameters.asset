@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728bc6d5be3dd554bb507ecbd9338553, type: 3}
   m_Name: UiCardParameters
   m_EditorClassIdentifier: 
+  startSizeWhenDraw: 0.05
+  discardedSize: 0.5
   disabledAlpha: 0.29736814
   hoverHeight: 0.5767658
   hoverRotation: 0
@@ -22,7 +24,5 @@ MonoBehaviour:
   bentAngle: 0
   rotationSpeed: 1.052676
   rotationSpeedP2: 630.26337
-  movementSpeed: 9.68
+  movementSpeed: 9.86
   scaleSpeed: 10.605265
-  startSizeWhenDraw: 0.05
-  discardedSize: 0.5

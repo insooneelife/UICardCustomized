@@ -60,7 +60,7 @@ namespace UICard
         {
             base.Awake();
             PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-            PlayerHand.OnCardPlayed += OnCardPlayed;
+            PlayerHand.onCardPlayed += OnCardPlayed;
 		}
 
         #endregion

@@ -5,80 +5,61 @@ using UnityEngine.SceneManagement;
 
 namespace UICard
 {
-    public class UiPlayerDeck : MonoBehaviour
-    {
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Fields
-
-        int Count { get; set; }
-
-        [SerializeField] [Tooltip("Prefab of the Card C#")]
-        GameObject cardPrefabCs;
-
-        [SerializeField] [Tooltip("World point where the deck is positioned")]
-        Transform deckPosition;
-
-        [SerializeField] [Tooltip("Game view transform")]
-        Transform gameView;
+	public class UiPlayerDeck : MonoBehaviour
+	{		
+		[SerializeField]
+		private GameObject _cardPrefab;
 
 		[SerializeField]
-		Pool.SetPooler cardPool;
+		[Tooltip("World point where the deck is positioned")]
+		private Transform _deckPosition;
 
-		IUiPlayerHand PlayerHand { get; set; }
+		[SerializeField]
+		[Tooltip("Game view transform")]
+		private Transform _gameView;
 
-		#endregion
+		[SerializeField]
+		private Pool.SetPooler _cardPool;
 
-		//--------------------------------------------------------------------------------------------------------------
+		private int _count;
 
-		#region Unitycallbacks
-
-		void Awake()
+		private IUiPlayerHand _playerHand;
+		
+		
+		private void Awake()
 		{
-			PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-			
+			_playerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
 		}
+				
 		
-		
-		
+		public void DrawCard()
+		{
+			Pool.Poolable cardPoolable = _cardPool.Dequeue();
 
-        #endregion
+			cardPoolable.name = "Card_" + _count;
+			cardPoolable.transform.SetParent(_gameView);
 
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Operations
-		
-        public void DrawCard()
-        {
-			var cardPoolable = cardPool.Dequeue();
-			
-			cardPoolable.name = "Card_" + Count;
-			cardPoolable.transform.SetParent(gameView);
-		
 
 			cardPoolable.gameObject.SetActive(true);
 
-			var card = cardPoolable.GetComponent<IUiCard>();
+			IUiCard card = cardPoolable.GetComponent<IUiCard>();
 			card.Init();
 
-			cardPoolable.transform.rotation = cardPrefabCs.transform.rotation;
-			cardPoolable.transform.localScale = cardPrefabCs.transform.localScale;
-			card.transform.position = deckPosition.position;
-            Count++;
-            PlayerHand.AddCard(card);
-        }
+			cardPoolable.transform.rotation = _cardPrefab.transform.rotation;
+			cardPoolable.transform.localScale = _cardPrefab.transform.localScale;
+			card.transform.position = _deckPosition.position;
+			_count++;
+			_playerHand.AddCard(card);
+		}
+
+		public void PlayCard()
+		{
+			if (_playerHand.Cards.Count > 0)
+			{
+				IUiCard randomCard = _playerHand.Cards.Random();
+				_playerHand.PlayCard(randomCard);
+			}
+		}		
 		
-        public void PlayCard()
-        {
-            if (PlayerHand.Cards.Count > 0)
-            {
-                var randomCard = PlayerHand.Cards.Random();
-                PlayerHand.PlayCard(randomCard);
-            }
-        }
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-    }
+	}
 }

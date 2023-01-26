@@ -1674,11 +1674,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe4e6242e55c49f4196ccec629c5b6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefabCs: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
+  _cardPrefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
     type: 3}
-  deckPosition: {fileID: 1773805236}
-  gameView: {fileID: 668910733}
-  cardPool: {fileID: 1772094144}
+  _deckPosition: {fileID: 1773805236}
+  _gameView: {fileID: 668910733}
+  _cardPool: {fileID: 1772094144}
 --- !u!1 &1847366782
 GameObject:
   m_ObjectHideFlags: 0

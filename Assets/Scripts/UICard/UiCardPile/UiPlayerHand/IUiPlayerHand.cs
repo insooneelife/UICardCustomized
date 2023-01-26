@@ -9,8 +9,10 @@ namespace UICard
 		Transform PlayTransform { get; }
 
 		List<IUiCard> Cards { get; }
-		Action<IUiCard> OnCardPlayed { get; set; }
-		Action<IUiCard> OnCardSelected { get; set; }
+		
+		Action<IUiCard> onCardPlayed { get; set; }
+		Action<IUiCard> onCardSelected { get; set; }
+		
 		void PlaySelected();
 		void Unselect();
 		void PlayCard(IUiCard uiCard);
