@@ -2,184 +2,208 @@
 
 namespace UICard
 {
-    [CreateAssetMenu(menuName = "Card Config Parameters")]
-    public class UiCardParameters : ScriptableObject
-    {
-        #region Disable
+	[CreateAssetMenu(menuName = "Card Config Parameters")]
+	public class UiCardParameters : ScriptableObject
+	{
 
-        [Header("Disable")] [Tooltip("How a card fades when disabled.")] [SerializeField] [Range(0.1f, 1)]
-        float disabledAlpha;
+		[Header("Draw")]
+		[SerializeField]
+		[Range(0, 1)]
+		[Tooltip("Scale when draw the card")]
+		float startSizeWhenDraw;
 
-        #endregion
 
-        //--------------------------------------------------------------------------------------------------------------
-        public float DisabledAlpha
-        {
-            get => disabledAlpha;
-            set => disabledAlpha = value;
-        }
+		[Header("Discard")]
+		[SerializeField]
+		[Range(0, 1)]
+		[Tooltip("Scale when discard the card")]
+		float discardedSize;
 
-        //--------------------------------------------------------------------------------------------------------------
+		[Header("Disable")]
+		[Tooltip("How a card fades when disabled.")]
+		[SerializeField]
+		[Range(0.1f, 1)]
+		float disabledAlpha;
+		
+		[Header("Hover")]
+		[SerializeField]
+		[Tooltip("How much the card will go upwards when hovered.")]
+		[Range(0, 4)]
+		float hoverHeight;
 
-        public void SetDefaults()
-        {
-            disabledAlpha = 0.5f;
+		[SerializeField]
+		[Tooltip("Whether the hovered card keep its rotation.")]
+		bool hoverRotation;
 
-            hoverHeight = 1;
-            hoverRotation = false;
-            hoverScale = 1.3f;
-            hoverSpeed = 15f;
+		[SerializeField]
+		[Tooltip("How much a hovered card scales.")]
+		[Range(0.9f, 2f)]
+		float hoverScale;
 
-            height = 0.12f;
-            spacing = -2;
-            bentAngle = 20;
+		[SerializeField]
+		[Range(0, 25)]
+		[Tooltip("Speed of a card while it is hovering")]
+		float hoverSpeed;
+		
 
-            rotationSpeedP2 = 500;
-            rotationSpeed = 20;
-            movementSpeed = 4;
-            scaleSpeed = 7;
+		
+		#region Bend		
 
-            startSizeWhenDraw = 0.05f;
-            discardedSize = 0.5f;
-        }
+		[Header("Bend")]
+		[SerializeField]
+		[Tooltip("Height factor between two cards.")]
+		[Range(0f, 1f)]
+		float height;
 
-        //--------------------------------------------------------------------------------------------------------------
+		[SerializeField]
+		[Tooltip("Amount of space between the cards on the X axis")]
+		[Range(0f, -5f)]
+		float spacing;
 
-        #region Hover
+		public float Spacing
+		{
+			get => spacing;
+			set => spacing = -value;
+		}
 
-        public float HoverHeight
-        {
-            get => hoverHeight;
-            set => hoverHeight = value;
-        }
+		[SerializeField]
+		[Tooltip("Total angle in degrees the cards will bend.")]
+		[Range(0, 60)]
+		float bentAngle;
 
-        public bool HoverRotation
-        {
-            get => hoverRotation;
-            set => hoverRotation = value;
-        }
+		#endregion
 
-        public float HoverScale
-        {
-            get => hoverScale;
-            set => hoverScale = value;
-        }
+		
+		#region Movement
 
-        [Header("Hover")] [SerializeField] [Tooltip("How much the card will go upwards when hovered.")] [Range(0, 4)]
-        float hoverHeight;
+		[Header("Rotation")]
+		[SerializeField]
+		[Range(0, 60)]
+		[Tooltip("Speed of a card while it is rotating")]
+		float rotationSpeed;
 
-        [SerializeField] [Tooltip("Whether the hovered card keep its rotation.")]
-        bool hoverRotation;
+		[SerializeField]
+		[Range(0, 1000)]
+		[Tooltip("Speed of a card while it is rotating for player 2")]
+		float rotationSpeedP2;
 
-        [SerializeField] [Tooltip("How much a hovered card scales.")] [Range(0.9f, 2f)]
-        float hoverScale;
+		[Header("Movement")]
+		[SerializeField]
+		[Range(0, 15)]
+		[Tooltip("Speed of a card while it is moving")]
+		float movementSpeed;
 
-        [SerializeField] [Range(0, 25)] [Tooltip("Speed of a card while it is hovering")]
-        float hoverSpeed;
+		[Header("Scale")]
+		[SerializeField]
+		[Range(0, 15)]
+		[Tooltip("Speed of a card while it is scaling")]
+		float scaleSpeed;
+		
+		#endregion
 
-        #endregion
+		
 
-        //--------------------------------------------------------------------------------------------------------------
 
-        #region Bend
+		public float StartSizeWhenDraw
+		{
+			get => startSizeWhenDraw;
+			set => startSizeWhenDraw = value;
+		}
+		
+		public float DiscardedSize 
+		{
+			get { return discardedSize; }		
+		}
 
-        public float Height
-        {
-            get => height;
-            set => height = value;
-        }
+		public float DisabledAlpha
+		{
+			get => disabledAlpha;
+			set => disabledAlpha = value;
+		}
 
-        public float BentAngle
-        {
-            get => bentAngle;
-            set => bentAngle = value;
-        }
+		public float HoverHeight
+		{
+			get => hoverHeight;
+			set => hoverHeight = value;
+		}
 
-        [Header("Bend")] [SerializeField] [Tooltip("Height factor between two cards.")] [Range(0f, 1f)]
-        float height;
+		public bool HoverRotation
+		{
+			get => hoverRotation;
+			set => hoverRotation = value;
+		}
 
-        [SerializeField] [Tooltip("Amount of space between the cards on the X axis")] [Range(0f, -5f)]
-        float spacing;
+		public float HoverScale
+		{
+			get => hoverScale;
+			set => hoverScale = value;
+		}
 
-        public float Spacing
-        {
-            get => spacing;
-            set => spacing = -value;
-        }
+		public float Height
+		{
+			get => height;
+			set => height = value;
+		}
 
-        [SerializeField] [Tooltip("Total angle in degrees the cards will bend.")] [Range(0, 60)]
-        float bentAngle;
+		public float BentAngle
+		{
+			get => bentAngle;
+			set => bentAngle = value;
+		}
 
-        #endregion
+		public float HoverSpeed
+		{
+			get => hoverSpeed;
+			set => hoverSpeed = value;
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
+		public float MovementSpeed
+		{
+			get => movementSpeed;
+			set => movementSpeed = value;
+		}
 
-        #region Movement
+		public float RotationSpeed
+		{
+			get => rotationSpeed;
+			set => rotationSpeed = value;
+		}
 
-        [Header("Rotation")] [SerializeField] [Range(0, 60)] [Tooltip("Speed of a card while it is rotating")]
-        float rotationSpeed;
+		public float ScaleSpeed
+		{
+			get => scaleSpeed;
+			set => scaleSpeed = value;
+		}
 
-        [SerializeField] [Range(0, 1000)] [Tooltip("Speed of a card while it is rotating for player 2")]
-        float rotationSpeedP2;
+		public float RotationSpeedP2
+		{
+			get => rotationSpeedP2;
+			set => rotationSpeedP2 = value;
+		}
 
-        [Header("Movement")] [SerializeField] [Range(0, 15)] [Tooltip("Speed of a card while it is moving")]
-        float movementSpeed;
+		public void SetDefaults()
+		{
+			disabledAlpha = 0.5f;
 
-        [Header("Scale")] [SerializeField] [Range(0, 15)] [Tooltip("Speed of a card while it is scaling")]
-        float scaleSpeed;
+			hoverHeight = 1;
+			hoverRotation = false;
+			hoverScale = 1.3f;
+			hoverSpeed = 15f;
 
-        public float HoverSpeed
-        {
-            get => hoverSpeed;
-            set => hoverSpeed = value;
-        }
+			height = 0.12f;
+			spacing = -2;
+			bentAngle = 20;
 
-        public float MovementSpeed
-        {
-            get => movementSpeed;
-            set => movementSpeed = value;
-        }
+			rotationSpeedP2 = 500;
+			rotationSpeed = 20;
+			movementSpeed = 4;
+			scaleSpeed = 7;
 
-        public float RotationSpeed
-        {
-            get => rotationSpeed;
-            set => rotationSpeed = value;
-        }
+			startSizeWhenDraw = 0.05f;
+			discardedSize = 0.5f;
+		}
 
-        public float ScaleSpeed
-        {
-            get => scaleSpeed;
-            set => scaleSpeed = value;
-        }
 
-        public float RotationSpeedP2
-        {
-            get => rotationSpeedP2;
-            set => rotationSpeedP2 = value;
-        }
 
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Draw Discard
-
-        [Header("Draw")] [SerializeField] [Range(0, 1)] [Tooltip("Scale when draw the card")]
-        float startSizeWhenDraw;
-
-        public float StartSizeWhenDraw
-        {
-            get => startSizeWhenDraw;
-            set => startSizeWhenDraw = value;
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        [Header("Discard")] [SerializeField] [Range(0, 1)] [Tooltip("Scale when discard the card")]
-        float discardedSize;
-
-        public float DiscardedSize => discardedSize;
-
-        #endregion
-    }
+	}
 }

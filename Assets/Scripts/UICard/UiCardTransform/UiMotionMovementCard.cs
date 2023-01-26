@@ -2,46 +2,51 @@
 
 namespace UICard
 {
-    public class UiMotionMovementCard : UiMotionBaseCard
-    {
-        public UiMotionMovementCard(IUiCard handler) : base(handler)
-        {
-        }
+	public class UiMotionMovementCard : UiMotionBaseCard
+	{
+		private bool _withZ;
 
-        bool WithZ { get; set; }
+		public UiMotionMovementCard(IUiCard handler) 
+			:
+			base(handler)
+		{}
 
-        public override void Execute(Vector3 position, float speed, float delay, bool withZ)
-        {
-            WithZ = withZ;
-            base.Execute(position, speed, delay, withZ);
-        }
+		public override void Execute(Vector3 position, float speed, float delay, bool withZ)
+		{
+			_withZ = withZ;
+			base.Execute(position, speed, delay, withZ);
+		}
 
-        protected override void OnMotionEnds()
-        {
-            WithZ = false;
-            IsOperating = false;
-            var target = Target;
-            target.z = Handler.transform.position.z;
-            Handler.transform.position = target;
-            base.OnMotionEnds();
-        }
+		protected override void OnMotionEnds()
+		{
+			_withZ = false;
+			_isOperating = false;
+			Vector3 target = _target;
+			target.z = _handler.transform.position.z;
+			_handler.transform.position = target;
+			base.OnMotionEnds();
+		}
 
-        protected override void KeepMotion()
-        {
-            var current = Handler.transform.position;
-            var amount = Speed * Time.deltaTime;
-            var delta = Vector3.Lerp(current, Target, amount);
-            if (!WithZ)
-                delta.z = Handler.transform.position.z;
-            Handler.transform.position = delta;
-        }
+		protected override void KeepMotion()
+		{
+			Vector3 current = _handler.transform.position;
+			float amount = _speed * Time.deltaTime;
+			Vector3 delta = Vector3.Lerp(current, Target, amount);
+			if (!_withZ)
+			{ 
+				delta.z = _handler.transform.position.z;
+			}
+			_handler.transform.position = delta;
+		}
 
-        protected override bool CheckFinalState()
-        {
-            var distance = Target - Handler.transform.position;
-            if (!WithZ)
-                distance.z = 0;
-            return distance.magnitude <= Threshold;
-        }
-    }
+		protected override bool CheckFinalState()
+		{
+			Vector3 distance = _target - _handler.transform.position;
+			if (!_withZ)
+			{ 
+				distance.z = 0;
+			}
+			return distance.magnitude <= Threshold;
+		}
+	}
 }

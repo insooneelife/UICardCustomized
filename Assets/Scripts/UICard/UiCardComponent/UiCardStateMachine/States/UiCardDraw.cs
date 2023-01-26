@@ -49,12 +49,12 @@ namespace UICard
 			CachePreviousValue();
 			DisableCollision();
 			SetScale();
-			_handler.Movement.OnFinishMotion += OnFinishMotion;
+			_handler.Movement.onFinishMotion += OnFinishMotion;
 		}
 
 		public override void OnExitState()
 		{
-			_handler.Movement.OnFinishMotion -= OnFinishMotion;
+			_handler.Movement.onFinishMotion -= OnFinishMotion;
 		}
 		
 

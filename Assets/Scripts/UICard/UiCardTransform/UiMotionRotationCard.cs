@@ -2,43 +2,45 @@
 
 namespace UICard
 {
-    public class UiMotionRotationCard : UiMotionBaseCard
-    {
-        //--------------------------------------------------------------------------------------------------------------
+	public class UiMotionRotationCard : UiMotionBaseCard
+	{
 
-        public UiMotionRotationCard(IUiCard handler) : base(handler)
-        {
-        }
+		public UiMotionRotationCard(IUiCard handler)
+			:
+			base(handler)
+		{ }
 
-        protected override float Threshold => 0.05f;
+		protected override float Threshold
+		{
+			get { return 0.05f; }
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
 
-        protected override void OnMotionEnds()
-        {
-            Handler.transform.eulerAngles = Target;
-            IsOperating = false;
-            OnFinishMotion?.Invoke(Handler);
-        }
+		protected override void OnMotionEnds()
+		{
+			_handler.transform.eulerAngles = _target;
+			_isOperating = false;
 
-        protected override void KeepMotion()
-        {
-            var current = Handler.transform.rotation;
-            var amount = Speed * Time.deltaTime;
-            var rotation = Quaternion.Euler(Target);
-            var newRotation = Quaternion.RotateTowards(current, rotation, amount);
-            Handler.transform.rotation = newRotation;
-        }
+			onFinishMotion?.Invoke(_handler);
+		}
 
-        protected override bool CheckFinalState()
-        {
-            var distance = Target - Handler.transform.eulerAngles;
-            var smallerThanLimit = distance.magnitude <= Threshold;
-            var equals360 = (int) distance.magnitude == 360;
-            var isFinal = smallerThanLimit || equals360;
-            return isFinal;
-        }
+		protected override void KeepMotion()
+		{
+			Quaternion current = _handler.transform.rotation;
+			float amount = _speed * Time.deltaTime;
+			Quaternion rotation = Quaternion.Euler(_target);
+			Quaternion newRotation = Quaternion.RotateTowards(current, rotation, amount);
+			_handler.transform.rotation = newRotation;
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		protected override bool CheckFinalState()
+		{
+			Vector3 distance = _target - _handler.transform.eulerAngles;
+			bool smallerThanLimit = distance.magnitude <= Threshold;
+			bool equals360 = (int)distance.magnitude == 360;
+			bool isFinal = smallerThanLimit || equals360;
+			return isFinal;
+		}
+		
+	}
 }

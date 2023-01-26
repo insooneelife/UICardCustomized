@@ -83,7 +83,7 @@ namespace UICard
             card.Discard();
             NotifyPileChange();
 
-			card.Movement.OnFinishMotion += OnCardArrived;
+			card.Movement.onFinishMotion += OnCardArrived;
 
 		}
 
@@ -97,7 +97,7 @@ namespace UICard
             if (card == null)
                 throw new ArgumentNullException("Null is not a valid argument.");
 
-			card.Movement.OnFinishMotion -= OnCardArrived;
+			card.Movement.onFinishMotion -= OnCardArrived;
 
 			card.Clear();
 

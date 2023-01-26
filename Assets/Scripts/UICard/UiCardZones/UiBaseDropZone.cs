@@ -16,7 +16,7 @@ namespace UICard
         {
 			CardHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
             Input = GetComponent<IMouseInput>();
-            Input.OnPointerUp += OnPointerUp;
+            Input.onPointerUp += OnPointerUp;
 
 			CardHand.OnAddCard += OnAddCard;
 			CardHand.OnRemoveCard += OnRemoveCard;
@@ -24,7 +24,7 @@ namespace UICard
 
 		protected virtual void OnDestroy()
 		{
-			Input.OnPointerUp -= OnPointerUp;
+			Input.onPointerUp -= OnPointerUp;
 
 			CardHand.OnAddCard -= OnAddCard;
 			CardHand.OnRemoveCard -= OnRemoveCard;
@@ -53,12 +53,12 @@ namespace UICard
 
 		void OnAddCard(IUiCard card) 
 		{
-			card.Input.OnPointerUp += OnPointerUpInternal;
+			card.Input.onPointerUp += OnPointerUpInternal;
 		}
 
 		void OnRemoveCard(IUiCard card) 
 		{
-			card.Input.OnPointerUp -= OnPointerUpInternal;
+			card.Input.onPointerUp -= OnPointerUpInternal;
 		}
 
 		

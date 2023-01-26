@@ -106,9 +106,9 @@ namespace UICard
 		{
 			if (_card != null)
 			{ 
-				_card.Input.OnBeginDrag += OnBeginDrag;
-				_card.Input.OnEndDrag += OnEndDrag;
-				_card.Input.OnDrag += OnDrag;
+				_card.Input.onBeginDrag += OnBeginDrag;
+				_card.Input.onEndDrag += OnEndDrag;
+				_card.Input.onDrag += OnDrag;
 			}
 		}
 
@@ -116,9 +116,9 @@ namespace UICard
 		{
 			if (_card != null)
 			{
-				_card.Input.OnBeginDrag += OnBeginDrag;
-				_card.Input.OnEndDrag += OnEndDrag;
-				_card.Input.OnDrag += OnDrag;
+				_card.Input.onBeginDrag += OnBeginDrag;
+				_card.Input.onEndDrag += OnEndDrag;
+				_card.Input.onDrag += OnDrag;
 			}
 		}
 	}

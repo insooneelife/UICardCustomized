@@ -78,14 +78,14 @@ namespace UICard
 
 		private void SubscribeInput()
 		{
-			_handler.Input.OnPointerExit += OnPointerExit;
-			_handler.Input.OnPointerDown += OnPointerDown;
+			_handler.Input.onPointerExit += OnPointerExit;
+			_handler.Input.onPointerDown += OnPointerDown;
 		}
 
 		private void UnsubscribeInput()
 		{
-			_handler.Input.OnPointerExit -= OnPointerExit;
-			_handler.Input.OnPointerDown -= OnPointerDown;
+			_handler.Input.onPointerExit -= OnPointerExit;
+			_handler.Input.onPointerDown -= OnPointerDown;
 		}
 
 		private void CalcEdge()

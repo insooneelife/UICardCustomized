@@ -23,13 +23,13 @@ namespace UICard
 
 		public override void OnEnterState()
 		{
-			_handler.Input.OnPointerDown += OnPointerDown;
-			_handler.Input.OnPointerEnter += OnPointerEnter;
+			_handler.Input.onPointerDown += OnPointerDown;
+			_handler.Input.onPointerEnter += OnPointerEnter;
 
 			if (_handler.Movement.IsOperating)
 			{
 				DisableCollision();
-				_handler.Movement.OnFinishMotion += OnFinishMotion;
+				_handler.Movement.onFinishMotion += OnFinishMotion;
 			}
 			else
 			{
@@ -42,9 +42,9 @@ namespace UICard
 
 		public override void OnExitState()
 		{
-			_handler.Input.OnPointerDown -= OnPointerDown;
-			_handler.Input.OnPointerEnter -= OnPointerEnter;
-			_handler.Movement.OnFinishMotion -= OnFinishMotion;
+			_handler.Input.onPointerDown -= OnPointerDown;
+			_handler.Input.onPointerEnter -= OnPointerEnter;
+			_handler.Movement.onFinishMotion -= OnFinishMotion;
 		}
 
 		#endregion FSM

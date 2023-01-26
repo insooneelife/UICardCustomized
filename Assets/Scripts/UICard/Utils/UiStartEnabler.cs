@@ -7,11 +7,17 @@ namespace UICard
     /// </summary>
     public class UiStartEnabler : MonoBehaviour
     {
-        public bool IsActive;
+		private bool _isActive;
+		
+        public bool IsActive
+		{
+			get { return _isActive; }
+			set { _isActive = value; }
+		}
 
 		private void Start()
 		{
-			gameObject.SetActive(IsActive);
+			gameObject.SetActive(_isActive);
 		} 
     }
 }

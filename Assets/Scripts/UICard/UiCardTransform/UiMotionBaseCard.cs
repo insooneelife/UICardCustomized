@@ -4,107 +4,113 @@ using UnityEngine;
 
 namespace UICard
 {
-    public abstract class UiMotionBaseCard
-    {
-        /// <summary>
-        ///     Dispatches when the motion ends.
-        /// </summary>
-        public Action<IUiCard> OnFinishMotion = (IUiCard card) => { };
+	public abstract class UiMotionBaseCard
+	{
+		// Dispatches when the motion ends.
+		public Action<IUiCard> onFinishMotion { get; set; }
 
-        //--------------------------------------------------------------------------------------------------------------
+		protected bool _isOperating;
+		
+		protected Vector3 _target;
 
-        protected UiMotionBaseCard(IUiCard handler) => Handler = handler;
+		protected IUiCard _handler;
 
-        /// <summary>
-        ///     Whether the component is still operating or not.
-        /// </summary>
-        public bool IsOperating { get; protected set; }
+		protected float _speed;
 
-        /// <summary>
-        ///     Limit magnitude until the reaches the target completely.
-        /// </summary>
-        protected virtual float Threshold => 0.05f;
 
-        /// <summary>
-        ///     Target of the motion.
-        /// </summary>
-        public Vector3 Target { get; protected set; }
+		// Whether the component is still operating or not.
+		public bool IsOperating 
+		{
+			get { return _isOperating; } 
+		}
 
-        /// <summary>
-        ///     Reference for the card.
-        /// </summary>
-        protected IUiCard Handler { get; }
+		// Limit magnitude until the reaches the target completely.
+		protected virtual float Threshold
+		{
+			get { return 0.05f; }
+		}
 
-        /// <summary>
-        ///     Speed which the it moves towards the Target.
-        /// </summary>
-        protected float Speed { get; set; }
+		// Target of the motion.
+		public Vector3 Target 
+		{
+			get { return _target; }
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
+		// Reference for the card.
+		protected IUiCard Handler 
+		{
+			get { return _handler; } 
+		}
+		
 
-        public void Update()
-        {
-            if (!IsOperating)
-                return;
+		protected UiMotionBaseCard(IUiCard handler)
+		{
+			_handler = handler;
+		}
 
-            if (CheckFinalState())
-                OnMotionEnds();
-            else
-                KeepMotion();
-        }
+		
+		public void Update()
+		{
+			if (!IsOperating)
+			{ 
+				return;
+			}
+
+			if (CheckFinalState())
+			{
+				OnMotionEnds();
+			}
+			else
+			{ 
+				KeepMotion();
+			}
+		}
 
 		public void Clear()
 		{
-			OnFinishMotion = null;
+			onFinishMotion = null;
 		}
 
-        /// <summary>
-        ///     Check if it has reached the threshold.
-        /// </summary>
-        /// <returns></returns>
-        protected abstract bool CheckFinalState();
+		// Check if it has reached the threshold.
+		protected abstract bool CheckFinalState();
 
-        /// <summary>
-        ///     Ends the motion and dispatch motion ends.
-        /// </summary>
-        protected virtual void OnMotionEnds() => OnFinishMotion?.Invoke(Handler);
+		// Ends the motion and dispatch motion ends.
+		protected virtual void OnMotionEnds()
+		{
+			onFinishMotion?.Invoke(Handler);
+		}
 
-        /// <summary>
-        ///     Keep the motion on update.
-        /// </summary>
-        protected abstract void KeepMotion();
 
-        /// <summary>
-        ///     Execute the motion with the parameters.
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <param name="speed"></param>
-        /// <param name="delay"></param>
-        public virtual void Execute(Vector3 vector, float speed, float delay = 0, bool withZ = false)
-        {
-            Speed = speed;
-            Target = vector;
-            if (delay == 0)
-                IsOperating = true;
-            else
-                Handler.MonoBehavior.StartCoroutine(AllowMotion(delay));
-        }
+		// Keep the motion on update.
+		protected abstract void KeepMotion();
 
-        /// <summary>
-        ///     Used to delay the Motion.
-        /// </summary>
-        /// <param name="delay"></param>
-        /// <returns></returns>
-        IEnumerator AllowMotion(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            IsOperating = true;
-        }
+		// Execute the motion with the parameters.
+		public virtual void Execute(Vector3 vector, float speed, float delay = 0, bool withZ = false)
+		{
+			_speed = speed;
+			_target = vector;
+			if (delay == 0)
+			{
+				_isOperating = true;
+			}
+			else
+			{ 
+				_handler.MonoBehavior.StartCoroutine(AllowMotion(delay));
+			}
+		}
 
-        /// <summary>
-        ///     Stop the motion. It won't trigger OnFinishMotion.
-        ///     TODO: Cancel the Delay Coroutine.
-        /// </summary>
-        public virtual void StopMotion() => IsOperating = false;
-    }
+		// Used to delay the Motion.
+		private IEnumerator AllowMotion(float delay)
+		{
+			yield return new WaitForSeconds(delay);
+			_isOperating = true;
+		}
+
+		// Stop the motion. It won't trigger OnFinishMotion.
+		// TODO: Cancel the Delay Coroutine.
+		public virtual void StopMotion() 
+		{
+			_isOperating = false;
+		} 
+	}
 }
