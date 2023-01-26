@@ -4,83 +4,64 @@ using UnityEngine.Playables;
 
 namespace UICard
 {
-    /// <summary>
-    ///     State Machine that holds all states of a UI Card.
-    /// </summary>
-    public class UiCardHandFsm : BaseStateMachine
-    {
-        //--------------------------------------------------------------------------------------------------------------
 
-        #region Constructor
+	// State Machine that holds all states of a UI Card.
+	public class UiCardHandFsm : BaseStateMachine
+	{
+		private UiCardParameters _cardConfigsParameters;
 
-        public UiCardHandFsm(Camera camera, UiCardParameters cardConfigsParameters, IUiCard handler = null) :
-            base(handler)
-        {
-            CardConfigsParameters = cardConfigsParameters;
+		private UiCardIdle _idleState;
+		private UiCardDisable _disableState;
+		private UiCardDrag _dragState;
+		private UiCardHover _hoverState;
+		private UiCardDraw _drawState;
+		private UiCardDiscard _discardState;
+		private UiCardPlay _playState;
+		
+		public UiCardHandFsm(Camera camera, UiCardParameters cardConfigsParameters, IUiCard handler = null) :
+			base(handler)
+		{
+			_cardConfigsParameters = cardConfigsParameters;
 
-            IdleState = new UiCardIdle(handler, this, CardConfigsParameters);
-            DisableState = new UiCardDisable(handler, this, CardConfigsParameters);
-            DragState = new UiCardDrag(handler, camera, this, CardConfigsParameters);
-            HoverState = new UiCardHover(handler, this, CardConfigsParameters);
-            DrawState = new UiCardDraw(handler, this, CardConfigsParameters);
-            DiscardState = new UiCardDiscard(handler, this, CardConfigsParameters);
-			PlayState = new UiCardPlay(handler, this, CardConfigsParameters);
-
-
-			RegisterState(IdleState);
-            RegisterState(DisableState);
-            RegisterState(DragState);
-            RegisterState(HoverState);
-            RegisterState(DrawState);
-            RegisterState(DiscardState);
-			RegisterState(PlayState);
+			_idleState = new UiCardIdle(handler, this, _cardConfigsParameters);
+			_disableState = new UiCardDisable(handler, this, _cardConfigsParameters);
+			_dragState = new UiCardDrag(handler, camera, this, _cardConfigsParameters);
+			_hoverState = new UiCardHover(handler, this, _cardConfigsParameters);
+			_drawState = new UiCardDraw(handler, this, _cardConfigsParameters);
+			_discardState = new UiCardDiscard(handler, this, _cardConfigsParameters);
+			_playState = new UiCardPlay(handler, this, _cardConfigsParameters);
+			
+			RegisterState(_idleState);
+			RegisterState(_disableState);
+			RegisterState(_dragState);
+			RegisterState(_hoverState);
+			RegisterState(_drawState);
+			RegisterState(_discardState);
+			RegisterState(_playState);
 
 			Initialize();
-        }
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Properties
-
-        UiCardIdle IdleState { get; }
-        UiCardDisable DisableState { get; }
-        UiCardDrag DragState { get; }
-        UiCardHover HoverState { get; }
-        UiCardDraw DrawState { get; }
-        UiCardDiscard DiscardState { get; }
-
-		UiCardPlay PlayState { get; }
-
-        UiCardParameters CardConfigsParameters { get; }
-
-		#endregion
-
-		//--------------------------------------------------------------------------------------------------------------
-
-		#region Operations
-
+		}
+		
 		public void Hover()
-		{ 
+		{
 			PushState<UiCardHover>();
 		}
 
 		public void Disable()
-		{ 
+		{
 			PushState<UiCardDisable>();
 		}
 
-		public void Enable() 
+		public void Enable()
 		{
 			PushState<UiCardIdle>();
 		}
 
 		public void Select()
-		{ 
+		{
 			PushState<UiCardDrag>();
 		}
-			
+
 
 		public void Unselect()
 		{
@@ -88,22 +69,19 @@ namespace UICard
 		}
 
 		public void Draw()
-		{ 
+		{
 			PushState<UiCardDraw>();
 		}
 
 		public void Discard()
 		{
 			PushState<UiCardDiscard>();
-		}		
-
-		public void Play() 
-		{
-			PushState<UiCardPlay>();
 		}
 
-        #endregion
+		public void Play()
+		{
+			PushState<UiCardPlay>();
+		}	
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+	}
 }
