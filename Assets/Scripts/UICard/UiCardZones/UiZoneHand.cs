@@ -4,14 +4,12 @@ using UnityEngine;
 
 namespace UICard
 {
-    /// <summary>
-    ///     GameController hand zone.
-    /// </summary>
-    public class UiZoneHand : UiBaseDropZone
-    {
+	// GameController hand zone.
+	public class UiZoneHand : UiBaseDropZone
+	{
 		protected override void OnPointerUp(PointerEventData eventData)
 		{
-			CardHand?.Unselect();
+			_cardHand?.Unselect();
 		}
 	}
 }
