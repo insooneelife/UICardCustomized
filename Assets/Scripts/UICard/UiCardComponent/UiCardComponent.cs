@@ -3,162 +3,244 @@ using UnityEngine;
 
 namespace UICard
 {
-    [RequireComponent(typeof(Collider))]
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(IMouseInput))]
-    public class UiCardComponent : MonoBehaviour, IUiCard
-    {
-		//--------------------------------------------------------------------------------------------------------------
+	[RequireComponent(typeof(Collider))]
+	[RequireComponent(typeof(Rigidbody))]
+	[RequireComponent(typeof(IMouseInput))]
+	public class UiCardComponent : MonoBehaviour, IUiCard
+	{
+		[SerializeField]
+		public UiCardParameters cardConfigsParameters;
 
-		#region Unity Callbacks
+		private IUiPlayerHand _hand;
+		private BendData _cacheBendData;
+
+		private UiCardHandFsm _fsm;
+		private Collider _collider;
+		private SpriteRenderer[] _renderers;
+		private SpriteRenderer _renderer;
+		private Rigidbody _rigidbody;
+		private IMouseInput _input;
+
+
+		private EnumTypes.CardHowToUses _cardHowToUse;
+
+
+		private UiMotionBaseCard _movement;
+		private UiMotionBaseCard _rotation;
+		private UiMotionBaseCard _scale;
+
+
+		public string Name
+		{
+			get { return gameObject.name; }
+		}
+
+		public IUiPlayerHand Hand 
+		{
+			get { return _hand; } 
+		} 
+
+		public BendData CacheBendData 
+		{
+			get { return _cacheBendData; }
+			set { _cacheBendData = value; }
+		}
+
+		public EnumTypes.CardHowToUses CardHowToUse 
+		{
+			get { return _cardHowToUse; } 
+		}
+
+		public bool IsDragging
+		{
+			get { return _fsm.IsCurrent<UiCardDrag>(); }
+		}
+
+		public bool IsHovering
+		{
+			get { return _fsm.IsCurrent<UiCardHover>(); }
+		}
+
+		public bool IsDisabled
+		{
+			get { return _fsm.IsCurrent<UiCardDisable>(); }
+		}
+
+		public bool IsPlayer
+		{
+			get { return transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1; }
+		}
+		
+
+		public MonoBehaviour MonoBehavior 
+		{
+			get { return this; }
+		} 
+		
+		public Camera MainCamera 
+		{
+			get { return Camera.main; }
+		} 
+
+		public SpriteRenderer[] Renderers 
+		{
+			get { return _renderers; }
+		}
+
+		public SpriteRenderer Renderer 
+		{
+			get { return _renderer; }
+		}
+
+		public Collider Collider
+		{
+			get { return _collider; }
+		}
+
+		public Rigidbody Rigidbody
+		{
+			get { return _rigidbody; }
+		}
+		
+		public IMouseInput Input
+		{
+			get { return _input; }
+		}
+
+
+		public UiMotionBaseCard Movement 
+		{
+			get { return _movement; } 
+		}
+		
+		public UiMotionBaseCard Rotation 
+		{
+			get { return _rotation; }
+		}
+
+		public UiMotionBaseCard Scale 
+		{
+			get { return _scale; }
+		}
+
+
+		
 
 		private void Awake()
 		{
-			MyTransform = transform;
-			MyCollider = GetComponent<Collider>();
-			MyRigidbody = GetComponent<Rigidbody>();
-			MyInput = GetComponent<IMouseInput>();
+			_collider = GetComponent<Collider>();
+			_rigidbody = GetComponent<Rigidbody>();
+			_input = GetComponent<IMouseInput>();
 
-			MyRenderers = GetComponentsInChildren<SpriteRenderer>();
-			MyRenderer = GetComponent<SpriteRenderer>();
+			_renderers = GetComponentsInChildren<SpriteRenderer>();
+			_renderer = GetComponent<SpriteRenderer>();
 
-			Scale = new UiMotionScaleCard(this);
-			Movement = new UiMotionMovementCard(this);
-			Rotation = new UiMotionRotationCard(this);
+			_scale = new UiMotionScaleCard(this);
+			_movement = new UiMotionMovementCard(this);
+			_rotation = new UiMotionRotationCard(this);
 
-			Fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
+			_fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
 		}
-
-
+		
+		private void Update()
+		{
+			_fsm?.Update();
+			_movement?.Update();
+			_rotation?.Update();
+			_scale?.Update();
+		}
+		
 		public void Init()
-        {
-            Hand = transform.parent.GetComponentInChildren<IUiPlayerHand>();            
-			int dice = UnityEngine.Random.Range(0, 2);			
-			CardHowToUse = dice == 0 ? EnumTypes.CardHowToUses.Normal : EnumTypes.CardHowToUses.TargetGround;
+		{
+			_hand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
+			int dice = UnityEngine.Random.Range(0, 2);
+			_cardHowToUse = dice == 0 ? EnumTypes.CardHowToUses.Normal : EnumTypes.CardHowToUses.TargetGround;
 			GetComponent<UiTargetLineController>().Init(this);
-        }
+		}
 
 		public void Clear()
 		{
-			Scale.Clear();
-			Movement.Clear();
-			Rotation.Clear();
+			_scale.Clear();
+			_movement.Clear();
+			_rotation.Clear();
 		}
 
-        void Update()
-        {
-            Fsm?.Update();
-            Movement?.Update();
-            Rotation?.Update();
-            Scale?.Update();
-        }
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Components
-
-        SpriteRenderer[] IUiCardComponents.Renderers => MyRenderers;
-        SpriteRenderer IUiCardComponents.Renderer => MyRenderer;
-        Collider IUiCardComponents.Collider => MyCollider;
-        Rigidbody IUiCardComponents.Rigidbody => MyRigidbody;
-        IMouseInput IUiCardComponents.Input => MyInput;
-		
-		IUiPlayerHand IUiCard.Hand => Hand;
-
-		public BendData CacheBendData { get; set; }
-
-		#endregion
 
 		#region Transform
 
-		public UiMotionBaseCard Movement { get; private set; }
-        public UiMotionBaseCard Rotation { get; private set; }
-        public UiMotionBaseCard Scale { get; private set; }
+		public void RotateTo(Vector3 rotation, float speed) 
+		{
+			_rotation.Execute(rotation, speed);
+		}
 
-        #endregion
+		public void MoveTo(Vector3 position, float speed, float delay)
+		{
+			_movement.Execute(position, speed, delay);
+		}
 
-        #region Properties
+		public void MoveToWithZ(Vector3 position, float speed, float delay)
+		{
+			_movement.Execute(position, speed, delay, true);
+		}
 
-        public string Name => gameObject.name;
-        [SerializeField] 
-		public UiCardParameters cardConfigsParameters;
-
-		UiCardHandFsm Fsm { get; set; }
-        Transform MyTransform { get; set; }
-        Collider MyCollider { get; set; }
-        SpriteRenderer[] MyRenderers { get; set; }
-        SpriteRenderer MyRenderer { get; set; }
-        Rigidbody MyRigidbody { get; set; }
-        IMouseInput MyInput { get; set; }
-        IUiPlayerHand Hand { get; set; }
-        public MonoBehaviour MonoBehavior => this;
-        public Camera MainCamera => Camera.main;
-        public bool IsDragging => Fsm.IsCurrent<UiCardDrag>();
-        public bool IsHovering => Fsm.IsCurrent<UiCardHover>();
-        public bool IsDisabled => Fsm.IsCurrent<UiCardDisable>();
-        public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
-
-		public EnumTypes.CardHowToUses CardHowToUse { get; set; }
+		public void ScaleTo(Vector3 scale, float speed, float delay)
+		{ 
+			_scale.Execute(scale, speed, delay);
+		}
 
 		#endregion
 
-		//--------------------------------------------------------------------------------------------------------------
 
-		#region Transform
 
-		public void RotateTo(Vector3 rotation, float speed) => Rotation.Execute(rotation, speed);
+		#region Forward Functions
 
-        public void MoveTo(Vector3 position, float speed, float delay) => Movement.Execute(position, speed, delay);
+		public void Hover()
+		{ 
+			_fsm.Hover();
+		}
 
-        public void MoveToWithZ(Vector3 position, float speed, float delay) =>
-            Movement.Execute(position, speed, delay, true);
+		public void Disable()
+		{ 
+			_fsm.Disable();
+		}
 
-        public void ScaleTo(Vector3 scale, float speed, float delay) => Scale.Execute(scale, speed, delay);
+		public void Enable()
+		{ 
+			_fsm.Enable();
+		}
 
-        #endregion
+		public void Select()
+		{
+			// to avoid the player selecting enemy's cards
+			if (!IsPlayer)
+				return;
 
-        //--------------------------------------------------------------------------------------------------------------
+			_hand.SelectCard(this);
+			_fsm.Select();
+		}
 
-        #region Operations
-
-        public void Hover() => Fsm.Hover();
-
-        public void Disable() => Fsm.Disable();
-
-        public void Enable() => Fsm.Enable();
-
-        public void Select()
-        {
-            // to avoid the player selecting enemy's cards
-            if (!IsPlayer)
-                return;
-
-            Hand.SelectCard(this);
-            Fsm.Select();
-        }
-
-        public void Unselect() => Fsm.Unselect();
+		public void Unselect() 
+		{ 
+			_fsm.Unselect();
+		} 
 
 		public void Draw()
-		{ 
-			Fsm.Draw();
-		}
-
-
-		public void Discard() 
-		{ 
-			Fsm.Discard();
-		}
-
-		public void Play() 
 		{
-			Fsm.Play();
+			_fsm.Draw();
 		}
 
-        #endregion
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		public void Discard()
+		{
+			_fsm.Discard();
+		}
+
+		public void Play()
+		{
+			_fsm.Play();
+		}
+
+		#endregion
+		
+	}
 }

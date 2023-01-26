@@ -2,9 +2,8 @@
 
 namespace UICard
 {
-	/// <summary>
-	///     A complete UI card.
-	/// </summary>
+
+	// A complete UI card.
 	public interface IUiCard : IStateMachineHandler, IUiCardComponents, IUiCardTransform
 	{
 		IUiPlayerHand Hand { get; }
@@ -15,20 +14,19 @@ namespace UICard
 		bool IsHovering { get; }
 		bool IsDisabled { get; }
 		bool IsPlayer { get; }
-		
+
 		EnumTypes.CardHowToUses CardHowToUse { get; }
 
 		void Init();
 		void Clear();
 
 		void Disable();
-        void Enable();
-        void Select();
-        void Unselect();
-        void Hover();
-        void Draw();
-        void Discard();
-
+		void Enable();
+		void Select();
+		void Unselect();
+		void Hover();
+		void Draw();
+		void Discard();
 		void Play();
 
 	}
