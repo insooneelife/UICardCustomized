@@ -6,33 +6,30 @@ using UnityEngine.UI;
 
 public class UiCardComponentUI : UiCardComponentBase
 {
-	[SerializeField]
-	private Image _image;
-
 	const int LayerToRenderNormal = 0;
 	const int LayerToRenderTop = 1;
 
+	[SerializeField]
+	private GameObject _uiPrefab;
 
-	private SpriteRenderer[] _renderers;
-	private SpriteRenderer _renderer;
+	[SerializeField]
+	private Canvas _canvas;
 
-
+	private Graphic[] _graphics;
+	
 	protected override void Awake()
 	{
 		base.Awake();
 
-		_renderers = GetComponentsInChildren<SpriteRenderer>();
-		_renderer = GetComponent<SpriteRenderer>();
+		_graphics = GetComponentsInChildren<Graphic>();
+		GameObject.Instantiate(_uiPrefab, _canvas.transform);		
 	}
 
 
 	// Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
 	public override void MakeRenderFirst()
 	{
-		for (int i = 0; i < _renderers.Length; i++)
-		{
-			_renderers[i].sortingOrder = LayerToRenderTop;
-		}
+		_canvas.sortingOrder = LayerToRenderTop;
 	}
 
 
@@ -40,36 +37,30 @@ public class UiCardComponentUI : UiCardComponentBase
 	// Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
 	public override void MakeRenderNormal()
 	{
-		for (int i = 0; i < _renderers.Length; i++)
-		{
-			if (_renderers[i])
-			{
-				_renderers[i].sortingOrder = LayerToRenderNormal;
-			}
-		}
+		_canvas.sortingOrder = LayerToRenderNormal;
 	}
 
 
 	public override void ApplyAllTransparency()
 	{
-		foreach (var renderer in _renderers)
+		foreach (var _graphic in _graphics)
 		{
-			var myColor = renderer.color;
+			var myColor = _graphic.color;
 			myColor.a = _cardConfigsParameters.DisabledAlpha;
-			renderer.color = myColor;
+			_graphic.color = myColor;
 		}
 	}
 
 	// Remove any alpha channel in all renderers.
 	public override void RemoveAllTransparency()
 	{
-		foreach (var renderer in _renderers)
+		foreach (var _graphic in _graphics)
 		{
-			if (renderer != null)
+			if (_graphic != null)
 			{
-				var myColor = renderer.color;
+				var myColor = _graphic.color;
 				myColor.a = 1;
-				renderer.color = myColor;
+				_graphic.color = myColor;
 			}
 		}
 	}
