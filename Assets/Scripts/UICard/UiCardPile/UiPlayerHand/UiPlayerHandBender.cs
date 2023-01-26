@@ -26,18 +26,18 @@ namespace UICard
 		[Tooltip("Transform used as anchor to position the cards.")]
 		private Transform _pivot;
 
-		private SpriteRenderer _cardRenderer;
+		private Bounds _cardBounds;
 		private IUiPlayerHand _playerHand;
 
-		public float CardWidth 
+		private float CardWidth 
 		{
-			get { return _cardRenderer.bounds.size.x; }
+			get { return _cardBounds.size.x; }
 		}
 		
 		private void Awake()
 		{
 			_playerHand = GetComponent<IUiPlayerHand>();
-			_cardRenderer = _cardPrefab.GetComponentsInChildren<SpriteRenderer>()[0];
+			_cardBounds = _cardPrefab.GetComponentInChildren<IUiCard>().Bounds;			
 			_playerHand.onPileChanged += Bend;
 		}
 

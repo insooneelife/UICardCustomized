@@ -1597,7 +1597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 
-  prefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca, type: 3}
+  prefab: {fileID: 5641387385709543961, guid: df488f101a86da848af7282d95fb9593, type: 3}
   prepopulate: 20
   maxCount: 2147483647
   autoRegister: 1
@@ -1674,7 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe4e6242e55c49f4196ccec629c5b6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardPrefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
+  _cardPrefab: {fileID: 5641387385709543961, guid: df488f101a86da848af7282d95fb9593,
     type: 3}
   _deckPosition: {fileID: 1773805236}
   _gameView: {fileID: 668910733}
@@ -1855,7 +1855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
-  _cardPrefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
+  _cardPrefab: {fileID: 5641387385709543961, guid: df488f101a86da848af7282d95fb9593,
     type: 3}
   _pivot: {fileID: 758570177}
 --- !u!114 &1989474355

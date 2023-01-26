@@ -309,6 +309,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardConfigsParameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df,
     type: 2}
+  _collider: {fileID: 7375693086349266152}
+  _rigidbody: {fileID: 5965555409100244655}
 --- !u!114 &3061994033972836288
 MonoBehaviour:
   m_ObjectHideFlags: 0
