@@ -9,7 +9,7 @@ namespace UICard
 	public class UiCardComponent : MonoBehaviour, IUiCard
 	{
 		[SerializeField]
-		public UiCardParameters cardConfigsParameters;
+		public UiCardParameters _cardConfigsParameters;
 
 		private IUiPlayerHand _hand;
 		private BendData _cacheBendData;
@@ -139,7 +139,7 @@ namespace UICard
 			_movement = new UiMotionMovementCard(this);
 			_rotation = new UiMotionRotationCard(this);
 
-			_fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
+			_fsm = new UiCardHandFsm(MainCamera, _cardConfigsParameters, this);
 		}
 		
 		private void Update()
