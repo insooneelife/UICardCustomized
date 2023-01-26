@@ -16,16 +16,16 @@ namespace UICard
 			_input = GetComponent<IMouseInput>();
 			_input.onPointerUp += OnPointerUp;
 
-			_cardHand.OnAddCard += OnAddCard;
-			_cardHand.OnRemoveCard += OnRemoveCard;
+			_cardHand.onAddCard += OnAddCard;
+			_cardHand.onRemoveCard += OnRemoveCard;
 		}
 
 		protected virtual void OnDestroy()
 		{
 			_input.onPointerUp -= OnPointerUp;
 
-			_cardHand.OnAddCard -= OnAddCard;
-			_cardHand.OnRemoveCard -= OnRemoveCard;
+			_cardHand.onAddCard -= OnAddCard;
+			_cardHand.onRemoveCard -= OnRemoveCard;
 		}
 
 		protected virtual void OnPointerUp(PointerEventData eventData)

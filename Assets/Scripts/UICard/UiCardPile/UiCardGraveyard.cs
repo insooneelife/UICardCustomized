@@ -6,41 +6,73 @@ using UnityEngine;
 
 namespace UICard
 {
-    //------------------------------------------------------------------------------------------------------------------
 
-    /// <summary>
-    ///     Card graveyard holds a register with cards played by the player.
-    /// </summary>
-    public class UiCardGraveyard : UiCardPile
-    {
-        [SerializeField] [Tooltip("World point where the graveyard is positioned")]
-        Transform graveyardPosition;
+	// Card graveyard holds a register with cards played by the player.
+	public class UiCardGraveyard : UiCardPile
+	{
+		[SerializeField]
+		[Tooltip("World point where the graveyard is positioned")]
+		private Transform _graveyardPosition;
 
 		[SerializeField]
-		Pool.SetPooler cardPool;
+		private Pool.SetPooler _cardPool;
 
-		[SerializeField] UiCardParameters parameters;
+		[SerializeField]
+		private UiCardParameters _parameters;
 
-		//--------------------------------------------------------------------------------------------------------------
-
-		IUiPlayerHand PlayerHand { get; set; }
-
-
-		private void OnCardArrived(IUiCard card)
+		private IUiPlayerHand _playerHand;
+		
+		protected override void Awake()
 		{
-			RemoveCard(card);
+			base.Awake();
+			_playerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
+			_playerHand.onCardPlayed += OnCardPlayed;
+		}
+
+		private void OnDestroy()
+		{
+			_playerHand.onCardPlayed -= OnCardPlayed;
+		}
+
+
+		// Adds a card to the graveyard or discard pile.
+		public override void AddCard(IUiCard card)
+		{
+			if (card == null)
+			{
+				throw new ArgumentNullException("Null is not a valid argument.");
+			}
+
+			_cards.Add(card);
+			card.transform.SetParent(_graveyardPosition);
+			card.Discard();
+			NotifyPileChange();
+			card.Movement.onFinishMotion += OnCardArrived;
+		}
+
+		// Removes a card from the graveyard or discard pile.
+		public override void RemoveCard(IUiCard card)
+		{
+			if (card == null)
+			{
+				throw new ArgumentNullException("Null is not a valid argument.");
+			}
+
+			card.Movement.onFinishMotion -= OnCardArrived;
+			card.Clear();
+			_cards.Remove(card);
+			_cardPool.EnqueueObject(card.gameObject);
+			NotifyPileChange();
 		}
 
 		private void OnCardPlayed(IUiCard card)
 		{
 			card.Play();
-			
-			
 			StartCoroutine(CoPlayCard(card));
 		}
 
 
-		IEnumerator CoPlayCard(IUiCard card)
+		private IEnumerator CoPlayCard(IUiCard card)
 		{
 			while (card.Movement.IsOperating)
 			{
@@ -48,89 +80,34 @@ namespace UICard
 			}
 
 			AddCard(card);
-
-			Sort(Cards);
+			Sort(_cards);
 		}
 
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Unitycallbacks
-
-        protected override void Awake()
-        {
-            base.Awake();
-            PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-            PlayerHand.onCardPlayed += OnCardPlayed;
-		}
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Operations
-
-        /// <summary>
-        ///     Adds a card to the graveyard or discard pile.
-        /// </summary>
-        /// <param name="card"></param>
-        public override void AddCard(IUiCard card)
-        {
-            if (card == null)
-                throw new ArgumentNullException("Null is not a valid argument.");
-
-            Cards.Add(card);
-            card.transform.SetParent(graveyardPosition);
-            card.Discard();
-            NotifyPileChange();
-
-			card.Movement.onFinishMotion += OnCardArrived;
-
-		}
-
-
-        /// <summary>
-        ///     Removes a card from the graveyard or discard pile.
-        /// </summary>
-        /// <param name="card"></param>
-        public override void RemoveCard(IUiCard card)
-        {
-            if (card == null)
-                throw new ArgumentNullException("Null is not a valid argument.");
-
-			card.Movement.onFinishMotion -= OnCardArrived;
-
-			card.Clear();
-
-			Cards.Remove(card);
-
-			cardPool.EnqueueObject(card.gameObject);
-
-
-			NotifyPileChange();
-        }
-
-		#endregion
-
-
-		private void Sort( List<IUiCard> cards)
+		private void OnCardArrived(IUiCard card)
 		{
-			var lastPos = cards.Count - 1;
-			var lastCard = cards[lastPos];
-			var gravPos = graveyardPosition.position + new Vector3(0, 0, -5);
-			var backGravPos = graveyardPosition.position;
+			RemoveCard(card);
+		}
+		
+
+
+		private void Sort(List<IUiCard> cards)
+		{
+			int lastPos = cards.Count - 1;
+			IUiCard lastCard = cards[lastPos];
+			Vector3 gravPos = _graveyardPosition.position + new Vector3(0, 0, -5);
+			Vector3 backGravPos = _graveyardPosition.position;
 
 			//move last
-			lastCard.MoveToWithZ(gravPos, parameters.MovementSpeed);
+			lastCard.MoveToWithZ(gravPos, _parameters.MovementSpeed);
 
 			//move others
-			for (var i = 0; i < cards.Count - 1; i++)
+			for (int i = 0; i < cards.Count - 1; i++)
 			{
-				var card = cards[i];
-				card.MoveToWithZ(backGravPos, parameters.MovementSpeed);
+				IUiCard card = cards[i];
+				card.MoveToWithZ(backGravPos, _parameters.MovementSpeed);
 			}
 
 		}
 
-		//--------------------------------------------------------------------------------------------------------------
 	}
 }

@@ -7,34 +7,28 @@ namespace UICard
 	// The Player Hand.
 	public class UiPlayerHand : UiCardPile, IUiPlayerHand
 	{
-		
-
 		[SerializeField]
 		private Transform _playTransform;
+
+		private IUiCard _selectedCard;
 
 
 		public Transform PlayTransform
 		{
 			get { return _playTransform; }
 		}
-
-		// Card currently selected by the player.
-		public IUiCard SelectedCard { get; private set; }
+		
 
 		public Action<IUiCard> onCardPlayed { get; set; }
 		public Action<IUiCard> onCardSelected { get; set; }
-
-
 		
-		
-
 		
 		#region Operations
 
 		// Select the card in the parameter.
 		public void SelectCard(IUiCard card)
 		{
-			SelectedCard = card ?? throw new ArgumentNullException("Null is not a valid argument.");
+			_selectedCard = card ?? throw new ArgumentNullException("Null is not a valid argument.");
 
 			//disable all cards
 			DisableCards();
@@ -44,10 +38,10 @@ namespace UICard
 		// Play the card which is currently selected. Nothing happens if current is null.
 		public void PlaySelected()
 		{
-			if (SelectedCard == null)
+			if (_selectedCard == null)
 				return;
 
-			PlayCard(SelectedCard);
+			PlayCard(_selectedCard);
 		}
 
 		// Play the card in the parameter.
@@ -58,7 +52,7 @@ namespace UICard
 				throw new ArgumentNullException("Null is not a valid argument.");
 			}
 
-			SelectedCard = null;
+			_selectedCard = null;
 			RemoveCard(card);
 			onCardPlayed?.Invoke(card);
 			EnableCards();
@@ -71,32 +65,40 @@ namespace UICard
 			if (card == null)
 				return;
 
-			SelectedCard = null;
+			_selectedCard = null;
 			card.Unselect();
 			NotifyPileChange();
 			EnableCards();
 		}
 
 		// Unselect the card which is currently selected. Nothing happens if current is null.
-		public void Unselect() => UnselectCard(SelectedCard);
+		public void Unselect()
+		{ 
+			UnselectCard(_selectedCard);
+		}
+			
 
 		// Disables input for all cards.
 		public void DisableCards()
 		{
 			foreach (var otherCard in Cards)
+			{ 
 				otherCard.Disable();
+			}
 		}
 
 		// Enables input for all cards.
 		public void EnableCards()
 		{
 			foreach (var otherCard in Cards)
+			{ 
 				otherCard.Enable();
+			}
 		}
 
 		private void NotifyCardSelected()
 		{
-			onCardSelected?.Invoke(SelectedCard);
+			onCardSelected?.Invoke(_selectedCard);
 		}		
 
 

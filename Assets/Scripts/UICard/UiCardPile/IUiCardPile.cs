@@ -2,19 +2,17 @@
 
 namespace UICard
 {
-    /// <summary>
-    ///     A pile of cards.
-    /// </summary>
-    public interface IUiCardPile
-    {
-        Action<IUiCard[]> OnPileChanged { get; set; }
+	// A pile of cards.
+	public interface IUiCardPile
+	{
+		Action<IUiCard[]> onPileChanged { get; set; }
 
-		Action<IUiCard> OnAddCard {	get; set; }
+		Action<IUiCard> onAddCard { get; set; }
 
-		Action<IUiCard> OnRemoveCard { get; set; }
+		Action<IUiCard> onRemoveCard { get; set; }
 
 
 		void AddCard(IUiCard uiCard);
-        void RemoveCard(IUiCard uiCard);
-    }
+		void RemoveCard(IUiCard uiCard);
+	}
 }

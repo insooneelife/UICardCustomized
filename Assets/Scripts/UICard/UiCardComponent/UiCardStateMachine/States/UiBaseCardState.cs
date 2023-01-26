@@ -48,8 +48,10 @@ namespace UICard
 		// Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
 		protected virtual void MakeRenderFirst()
 		{
-			for (var i = 0; i < _handler.Renderers.Length; i++)
+			for (int i = 0; i < _handler.Renderers.Length; i++)
+			{ 
 				_handler.Renderers[i].sortingOrder = LayerToRenderTop;
+			}
 		}
 
 
@@ -57,9 +59,13 @@ namespace UICard
 		// Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
 		protected virtual void MakeRenderNormal()
 		{
-			for (var i = 0; i < _handler.Renderers.Length; i++)
+			for (int i = 0; i < _handler.Renderers.Length; i++)
+			{
 				if (_handler.Renderers[i])
+				{ 
 					_handler.Renderers[i].sortingOrder = LayerToRenderNormal;
+				}
+			}
 		}
 
 		// Enables the card entirely. Collision, Rigidybody and adds Alpha.
@@ -67,9 +73,14 @@ namespace UICard
 		protected void Enable()
 		{
 			if (_handler.Collider)
+			{ 
 				EnableCollision();
+			}
+
 			if (_handler.Rigidbody)
+			{ 
 				_handler.Rigidbody.Sleep();
+			}
 
 			MakeRenderNormal();
 			RemoveAllTransparency();
@@ -83,6 +94,7 @@ namespace UICard
 			DisableCollision();
 			_handler.Rigidbody.Sleep();
 			MakeRenderNormal();
+			
 			foreach (var renderer in _handler.Renderers)
 			{
 				var myColor = renderer.color;
@@ -112,12 +124,14 @@ namespace UICard
 		protected void RemoveAllTransparency()
 		{
 			foreach (var renderer in _handler.Renderers)
-				if (renderer)
+			{ 
+				if (renderer != null)
 				{
 					var myColor = renderer.color;
 					myColor.a = 1;
 					renderer.color = myColor;
 				}
+			}
 		}
 
 

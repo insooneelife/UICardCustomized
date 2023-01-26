@@ -1372,9 +1372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c61e5791f9bb5a4478b2d019f359b03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graveyardPosition: {fileID: 1759191721}
-  cardPool: {fileID: 1772094144}
-  parameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
+  _graveyardPosition: {fileID: 1759191721}
+  _cardPool: {fileID: 1772094144}
+  _parameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
 --- !u!1 &1768110723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1854,10 +1854,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688b5f946363c9844a92f13e72bb8301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
-  CardPrefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
+  _parameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
+  _cardPrefab: {fileID: 3245573509686006908, guid: da89c93580533da4abe22dd655a7d0ca,
     type: 3}
-  pivot: {fileID: 758570177}
+  _pivot: {fileID: 758570177}
 --- !u!114 &1989474355
 MonoBehaviour:
   m_ObjectHideFlags: 0

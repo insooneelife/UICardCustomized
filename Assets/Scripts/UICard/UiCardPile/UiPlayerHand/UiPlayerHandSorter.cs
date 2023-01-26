@@ -3,39 +3,40 @@ using UnityEngine;
 
 namespace UICard
 {
-    [RequireComponent(typeof(IUiPlayerHand))]
-    public class UiPlayerHandSorter : MonoBehaviour
-    {
-        //--------------------------------------------------------------------------------------------------------------
+	[RequireComponent(typeof(IUiPlayerHand))]
+	public class UiPlayerHandSorter : MonoBehaviour
+	{
+		private const int OffsetZ = -1;
+		private IUiCardPile _playerHand;
+		
 
-        const int OffsetZ = -1;
-        IUiCardPile PlayerHand { get; set; }
+		private void Awake()
+		{
+			_playerHand = GetComponent<IUiPlayerHand>();
+			_playerHand.onPileChanged += Sort;
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
+		private void OnDestroy()
+		{
+			_playerHand.onPileChanged += Sort;
+		}
+		
+		private void Sort(IUiCard[] cards)
+		{
+			if (cards == null)
+			{ 
+				throw new ArgumentException("Can't sort a card list null");
+			}
 
-        void Awake()
-        {
-            PlayerHand = GetComponent<IUiPlayerHand>();
-            PlayerHand.OnPileChanged += Sort;
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        public void Sort(IUiCard[] cards)
-        {
-            if (cards == null)
-                throw new ArgumentException("Can't sort a card list null");
-
-            var layerZ = 0;
-            foreach (var card in cards)
-            {
-                var localCardPosition = card.transform.localPosition;
-                localCardPosition.z = layerZ;
-                card.transform.localPosition = localCardPosition;
-                layerZ += OffsetZ;
-            }
-        }
-
-        //--------------------------------------------------------------------------------------------------------------
-    }
+			int layerZ = 0;
+			foreach (IUiCard card in cards)
+			{
+				Vector3 localCardPosition = card.transform.localPosition;
+				localCardPosition.z = layerZ;
+				card.transform.localPosition = localCardPosition;
+				layerZ += OffsetZ;
+			}
+		}
+		
+	}
 }

@@ -4,130 +4,88 @@ using UnityEngine;
 
 namespace UICard
 {
-    //------------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    ///     Pile of cards. Add or Remove cards and be notified when changes happen.
-    /// </summary>
-    public abstract class UiCardPile : MonoBehaviour, IUiCardPile
-    {
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Unitycallbacks
-
-        protected virtual void Awake()
-        {
-            //initialize register
-            Cards = new List<IUiCard>();
-
-            Clear();
-        }
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Properties
-
-        /// <summary>
-        ///     List with all cards.
-        /// </summary>
-        public List<IUiCard> Cards { get; private set; }
-
-        /// <summary>
-        ///     Event raised when add or remove a card.
-        /// </summary>
-        event Action<IUiCard[]> onPileChanged = hand => { };
-
-        public Action<IUiCard[]> OnPileChanged
-        {
-            get => onPileChanged;
-            set => onPileChanged = value;
-        }
-
-		event Action<IUiCard> onAddCard = hand => { };
-
-		public Action<IUiCard> OnAddCard
+	// Pile of cards. Add or Remove cards and be notified when changes happen.
+	public abstract class UiCardPile : MonoBehaviour, IUiCardPile
+	{
+		protected List<IUiCard> _cards;
+		
+		public List<IUiCard> Cards 
 		{
-			get => onAddCard;
-			set => onAddCard = value;
+			get { return _cards; } 
+		}
+		
+		public Action<IUiCard[]> onPileChanged { get; set; }
+		
+		public Action<IUiCard> onAddCard { get; set; }
+
+		public Action<IUiCard> onRemoveCard	{ get; set; }
+
+
+		protected virtual void Awake()
+		{
+			//initialize register
+			_cards = new List<IUiCard>();
+			Clear();
 		}
 
-		event Action<IUiCard> onRemoveCard = hand => { };
-
-		public Action<IUiCard> OnRemoveCard
-		{
-			get => onRemoveCard;
-			set => onRemoveCard = value;
-		}
-
-
-		#endregion
-
-		//--------------------------------------------------------------------------------------------------------------
 
 		#region Operations
 
-		/// <summary>
-		///     Add a card to the pile.
-		/// </summary>
-		/// <param name="card"></param>
+		// Add a card to the pile.
 		public virtual void AddCard(IUiCard card)
-        {
-            if (card == null)
-                throw new ArgumentNullException("Null is not a valid argument.");
+		{
+			if (card == null)
+			{ 
+				throw new ArgumentNullException("Null is not a valid argument.");
+			}
 
-            Cards.Add(card);
-            card.transform.SetParent(transform);
-            NotifyPileChange();
+			_cards.Add(card);
+			card.transform.SetParent(transform);
+			NotifyPileChange();
 
 			onAddCard?.Invoke(card);
 
 			card.Draw();
-        }
+		}
 
+		
+		// Remove a card from the pile.
+		public virtual void RemoveCard(IUiCard card)
+		{
+			if (card == null)
+			{ 
+				throw new ArgumentNullException("Null is not a valid argument.");
+			}
 
-        /// <summary>
-        ///     Remove a card from the pile.
-        /// </summary>
-        /// <param name="card"></param>
-        public virtual void RemoveCard(IUiCard card)
-        {
-            if (card == null)
-                throw new ArgumentNullException("Null is not a valid argument.");
+			_cards.Remove(card);
 
-            Cards.Remove(card);
-
-            NotifyPileChange();
+			NotifyPileChange();
 
 			onRemoveCard?.Invoke(card);
 		}
 
-        /// <summary>
-        ///     Clear all the pile.
-        /// </summary>
-        protected virtual void Clear()
-        {
-            var childCards = GetComponentsInChildren<IUiCard>();
-            foreach (var uiCardHand in childCards)
-                Destroy(uiCardHand.gameObject);
+		// Clear all the pile.
+		protected virtual void Clear()
+		{
+			IUiCard[] childCards = GetComponentsInChildren<IUiCard>();
+			foreach (var uiCardHand in childCards)
+			{ 
+				Destroy(uiCardHand.gameObject);
+			}
 
-            Cards.Clear();
-        }
+			_cards.Clear();
+		}
 
-		/// <summary>
-		///     Notify all listeners of this pile that some change has been made.
-		/// </summary>
+		// Notify all listeners of this pile that some change has been made.
 		public void NotifyPileChange()
 		{
-			if (Cards.Count > 0)
-			{ 
-				onPileChanged?.Invoke(Cards.ToArray());
+			if (_cards.Count > 0)
+			{
+				onPileChanged?.Invoke(_cards.ToArray());
 			}
-		} 
+		}
 
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		#endregion
+		
+	}
 }

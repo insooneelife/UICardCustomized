@@ -11,103 +11,97 @@ namespace UICard
 		public Vector3 movePosition;
 	}
 
-    /// <summary>
-    ///     Class responsible to bend the cards in the player hand.
-    /// </summary>
-    [RequireComponent(typeof(IUiPlayerHand))]
-    public class UiPlayerHandBender : MonoBehaviour
-    {
-        //--------------------------------------------------------------------------------------------------------------
+	// Class responsible to bend the cards in the player hand.
+	[RequireComponent(typeof(IUiPlayerHand))]
+	public class UiPlayerHandBender : MonoBehaviour
+	{
+		[SerializeField]
+		private UiCardParameters _parameters;
 
-        #region Unitycallbacks
+		[SerializeField]
+		[Tooltip("The Card Prefab")]
+		private GameObject _cardPrefab;
 
-        void Awake()
-        {
-            PlayerHand = GetComponent<IUiPlayerHand>();
-            CardRenderer = CardPrefab.GetComponentsInChildren<SpriteRenderer>()[0];
-            PlayerHand.OnPileChanged += Bend;
+		[SerializeField]
+		[Tooltip("Transform used as anchor to position the cards.")]
+		private Transform _pivot;
+
+		private SpriteRenderer _cardRenderer;
+		private IUiPlayerHand _playerHand;
+
+		public float CardWidth 
+		{
+			get { return _cardRenderer.bounds.size.x; }
+		}
+		
+		private void Awake()
+		{
+			_playerHand = GetComponent<IUiPlayerHand>();
+			_cardRenderer = _cardPrefab.GetComponentsInChildren<SpriteRenderer>()[0];
+			_playerHand.onPileChanged += Bend;
 		}
 
 		
-
 		private void OnDestroy()
 		{
-			PlayerHand.OnPileChanged -= Bend;
+			_playerHand.onPileChanged -= Bend;
 		}
-
-		#endregion
+		
 
 		private void OnEnterHover(IUiCard card)
 		{
-			Bend(PlayerHand.Cards.ToArray());		
+			Bend(_playerHand.Cards.ToArray());
 		}
 
 		private void OnExitHover(IUiCard card)
 		{
-			Bend(PlayerHand.Cards.ToArray());
+			Bend(_playerHand.Cards.ToArray());
 		}
+				
 
-		//--------------------------------------------------------------------------------------------------------------
+		#region Operations
 
-		#region Fields and Properties
-
-		[SerializeField] UiCardParameters parameters;
-
-        [SerializeField] [Tooltip("The Card Prefab")]
-        GameObject CardPrefab;
-
-        [SerializeField] [Tooltip("Transform used as anchor to position the cards.")]
-        Transform pivot;
-
-        SpriteRenderer CardRenderer { get; set; }
-        float CardWidth => CardRenderer.bounds.size.x;
-        IUiPlayerHand PlayerHand { get; set; }
-
-        #endregion
-
-        //--------------------------------------------------------------------------------------------------------------
-
-        #region Operations
-
-        void Bend(IUiCard[] cards)
-        {
+		private void Bend(IUiCard[] cards)
+		{
 			if (cards == null)
-                throw new ArgumentException("Can't bend a card list null");
+			{ 
+				throw new ArgumentException("Can't bend a card list null");
+			}
 
-            var fullAngle = -parameters.BentAngle;
-            var anglePerCard = fullAngle / cards.Length;
-            var firstAngle = CalcFirstAngle(fullAngle);
-            var handWidth = CalcHandWidth(cards.Length);
+			float fullAngle = -_parameters.BentAngle;
+			float anglePerCard = fullAngle / cards.Length;
+			float firstAngle = CalcFirstAngle(fullAngle);
+			float handWidth = CalcHandWidth(cards.Length);
 
-            var pivotLocationFactor = pivot.CloserEdge(Camera.main, Screen.width, Screen.height);
+			int pivotLocationFactor = _pivot.CloserEdge(Camera.main, Screen.width, Screen.height);
 
-            //calc first position of the offset on X axis
-            var offsetX = pivot.position.x - handWidth / 2;
+			//calc first position of the offset on X axis
+			float offsetX = _pivot.position.x - handWidth / 2;
 
-            for (var i = 0; i < cards.Length; i++)
-            {
-                var card = cards[i];
+			for (int i = 0; i < cards.Length; i++)
+			{
+				IUiCard card = cards[i];
 
-                //set card Z angle
-                var angleTwist = (firstAngle + i * anglePerCard) * pivotLocationFactor;
+				//set card Z angle
+				float angleTwist = (firstAngle + i * anglePerCard) * pivotLocationFactor;
 
-                //calc x position
-                var xPos = offsetX + CardWidth / 2;
+				//calc x position
+				float xPos = offsetX + CardWidth / 2;
 
-                //calc y position
-                var yDistance = Mathf.Abs(angleTwist) * parameters.Height;
-                var yPos = pivot.position.y - yDistance * pivotLocationFactor;
+				//calc y position
+				float yDistance = Mathf.Abs(angleTwist) * _parameters.Height;
+				float yPos = _pivot.position.y - yDistance * pivotLocationFactor;
 
-				var zAxisRot = pivotLocationFactor == 1 ? 0 : 180;
-				var rotation = new Vector3(0, 0, angleTwist - zAxisRot);
-				var position = new Vector3(xPos, yPos, card.transform.position.z);
-				var rotSpeed = card.IsPlayer ? parameters.RotationSpeed : parameters.RotationSpeedP2;
+				int zAxisRot = pivotLocationFactor == 1 ? 0 : 180;
+				Vector3 rotation = new Vector3(0, 0, angleTwist - zAxisRot);
+				Vector3 position = new Vector3(xPos, yPos, card.transform.position.z);
+				float rotSpeed = card.IsPlayer ? _parameters.RotationSpeed : _parameters.RotationSpeedP2;
 
 				//set position
 				if (!card.IsDragging && !card.IsHovering)
 				{
 					card.RotateTo(rotation, rotSpeed);
-					card.MoveTo(position, parameters.MovementSpeed);
+					card.MoveTo(position, _parameters.MovementSpeed);
 					card.CacheBendData = null;
 				}
 				else
@@ -118,36 +112,29 @@ namespace UICard
 					card.CacheBendData = bendData;
 				}
 
-                //increment offset
-                offsetX += CardWidth + parameters.Spacing;
-            }
-        }
+				//increment offset
+				offsetX += CardWidth + _parameters.Spacing;
+			}
+		}
+		
 
-        /// <summary>
-        ///     Calculus of the angle of the first card.
-        /// </summary>
-        /// <param name="fullAngle"></param>
-        /// <returns></returns>
-        static float CalcFirstAngle(float fullAngle)
-        {
-            var magicMathFactor = 0.1f;
-            return -(fullAngle / 2) + fullAngle * magicMathFactor;
-        }
+		// Calculus of the width of the player's hand.
+		private float CalcHandWidth(int quantityOfCards)
+		{
+			float widthCards = quantityOfCards * CardWidth;
+			float widthSpacing = (quantityOfCards - 1) * _parameters.Spacing;
+			return widthCards + widthSpacing;
+		}
 
-        /// <summary>
-        ///     Calculus of the width of the player's hand.
-        /// </summary>
-        /// <param name="quantityOfCards"></param>
-        /// <returns></returns>
-        float CalcHandWidth(int quantityOfCards)
-        {
-            var widthCards = quantityOfCards * CardWidth;
-            var widthSpacing = (quantityOfCards - 1) * parameters.Spacing;
-            return widthCards + widthSpacing;
-        }
 
-        #endregion
+		// Calculus of the angle of the first card.
+		private static float CalcFirstAngle(float fullAngle)
+		{
+			float magicMathFactor = 0.1f;
+			return -(fullAngle / 2) + fullAngle * magicMathFactor;
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+		#endregion
+
+	}
 }
