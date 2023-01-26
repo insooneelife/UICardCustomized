@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     State Machine that holds all states of a UI Card.

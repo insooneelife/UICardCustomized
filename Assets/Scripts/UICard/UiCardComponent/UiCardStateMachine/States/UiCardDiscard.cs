@@ -1,7 +1,7 @@
 ﻿using Patterns.StateMachine;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     State when a cards has been discarded.

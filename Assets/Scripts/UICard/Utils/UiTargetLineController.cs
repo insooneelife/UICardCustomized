@@ -11,7 +11,7 @@ namespace EnumTypes
 	}
 }
 
-namespace Tools.UI.Card
+namespace UICard
 {
 	
 

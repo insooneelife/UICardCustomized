@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     public interface IUiPlayerHand : IUiCardPile
     {		

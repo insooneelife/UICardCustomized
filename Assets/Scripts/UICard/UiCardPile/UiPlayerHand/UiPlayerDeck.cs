@@ -3,9 +3,9 @@ using Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Tools.UI.Card
+namespace UICard
 {
-    public class UiPlayerHandUtils : MonoBehaviour
+    public class UiPlayerDeck : MonoBehaviour
     {
         //--------------------------------------------------------------------------------------------------------------
 
@@ -27,23 +27,20 @@ namespace Tools.UI.Card
 
 		IUiPlayerHand PlayerHand { get; set; }
 
-        #endregion
+		#endregion
 
-        //--------------------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------------------------------
 
-        #region Unitycallbacks
+		#region Unitycallbacks
 
-        void Awake() => PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-
-        IEnumerator Start()
-        {
-            //starting cards
-            for (var i = 0; i < 5; i++)
-            {
-                yield return new WaitForSeconds(0.2f);
-                DrawCard();
-            }
-        }
+		void Awake()
+		{
+			PlayerHand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
+			
+		}
+		
+		
+		
 
         #endregion
 
@@ -53,19 +50,19 @@ namespace Tools.UI.Card
 		
         public void DrawCard()
         {
-			//TODO: Consider replace Instantiate by an Object Pool Pattern
-
 			var cardPoolable = cardPool.Dequeue();
-
-
-			//var cardGo = Instantiate(cardPrefabCs, gameView);
+			
 			cardPoolable.name = "Card_" + Count;
 			cardPoolable.transform.SetParent(gameView);
+		
+
 			cardPoolable.gameObject.SetActive(true);
 
 			var card = cardPoolable.GetComponent<IUiCard>();
 			card.Init();
-			
+
+			cardPoolable.transform.rotation = cardPrefabCs.transform.rotation;
+			cardPoolable.transform.localScale = cardPrefabCs.transform.localScale;
 			card.transform.position = deckPosition.position;
             Count++;
             PlayerHand.AddCard(card);
@@ -79,15 +76,6 @@ namespace Tools.UI.Card
                 PlayerHand.PlayCard(randomCard);
             }
         }
-
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab)) DrawCard();
-            if (Input.GetKeyDown(KeyCode.Space)) PlayCard();
-            if (Input.GetKeyDown(KeyCode.Escape)) Restart();
-        }
-
-        public void Restart() => SceneManager.LoadScene(0);
 
         #endregion
 

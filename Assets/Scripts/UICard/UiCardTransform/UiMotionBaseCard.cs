@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     public abstract class UiMotionBaseCard
     {
@@ -52,6 +52,11 @@ namespace Tools.UI.Card
             else
                 KeepMotion();
         }
+
+		public void Clear()
+		{
+			OnFinishMotion = null;
+		}
 
         /// <summary>
         ///     Check if it has reached the threshold.

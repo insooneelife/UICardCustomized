@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     [RequireComponent(typeof(IUiPlayerHand))]
     public class UiPlayerHandSorter : MonoBehaviour

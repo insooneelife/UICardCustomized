@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     UI Card Idle behavior.

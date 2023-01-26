@@ -1,46 +1,48 @@
 ﻿using Extensions;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(IMouseInput))]
     public class UiCardComponent : MonoBehaviour, IUiCard
     {
-        //--------------------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------------------------------
 
-        #region Unity Callbacks
+		#region Unity Callbacks
 
-        public void Init()
+		private void Awake()
+		{
+			MyTransform = transform;
+			MyCollider = GetComponent<Collider>();
+			MyRigidbody = GetComponent<Rigidbody>();
+			MyInput = GetComponent<IMouseInput>();
+
+			MyRenderers = GetComponentsInChildren<SpriteRenderer>();
+			MyRenderer = GetComponent<SpriteRenderer>();
+
+			Scale = new UiMotionScaleCard(this);
+			Movement = new UiMotionMovementCard(this);
+			Rotation = new UiMotionRotationCard(this);
+
+			Fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
+		}
+
+
+		public void Init()
         {
-            //components
-            MyTransform = transform;
-            MyCollider = GetComponent<Collider>();
-            MyRigidbody = GetComponent<Rigidbody>();
-            MyInput = GetComponent<IMouseInput>();
-            Hand = transform.parent.GetComponentInChildren<IUiPlayerHand>();
-            MyRenderers = GetComponentsInChildren<SpriteRenderer>();
-            MyRenderer = GetComponent<SpriteRenderer>();
-
-            //transform
-            Scale = new UiMotionScaleCard(this);
-            Movement = new UiMotionMovementCard(this);
-            Rotation = new UiMotionRotationCard(this);
-
-            //fsm
-            Fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
-
-			int dice = UnityEngine.Random.Range(0, 2);
-			
+            Hand = transform.parent.GetComponentInChildren<IUiPlayerHand>();            
+			int dice = UnityEngine.Random.Range(0, 2);			
 			CardHowToUse = dice == 0 ? EnumTypes.CardHowToUses.Normal : EnumTypes.CardHowToUses.TargetGround;
-
 			GetComponent<UiTargetLineController>().Init(this);
         }
 
-		public void Destroy()
+		public void Clear()
 		{
-			
+			Scale.Clear();
+			Movement.Clear();
+			Rotation.Clear();
 		}
 
         void Update()

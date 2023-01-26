@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     [CreateAssetMenu(menuName = "Card Config Parameters")]
     public class UiCardParameters : ScriptableObject

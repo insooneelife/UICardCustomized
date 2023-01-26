@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     Enables or Disables a gameobject on Start.

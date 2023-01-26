@@ -3,7 +3,7 @@ using Patterns.StateMachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     public class UiCardHover : UiBaseCardState
     {

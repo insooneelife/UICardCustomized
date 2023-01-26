@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     Base zones where the user can drop a UI Card.

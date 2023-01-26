@@ -1,11 +1,11 @@
 using Patterns.StateMachine;
 using System.Collections;
 using System.Collections.Generic;
-using Tools.UI.Card;
+using UICard;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
-namespace Tools.UI.Card 
+namespace UICard 
 {
 	public class UiCardPlay : UiBaseCardState
 	{

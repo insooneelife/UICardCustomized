@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     //------------------------------------------------------------------------------------------------------------------
 

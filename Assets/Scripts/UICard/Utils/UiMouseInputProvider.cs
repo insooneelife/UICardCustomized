@@ -2,12 +2,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Tools.UI
+namespace UICard
 {
     /// <summary>
     ///     Interface for all the Unity Mouse Input System.
     /// </summary>
-    public interface IMouseInput :
+    public interface IMouseInput 
+		:
         IPointerClickHandler,
         IBeginDragHandler,
         IDragHandler,

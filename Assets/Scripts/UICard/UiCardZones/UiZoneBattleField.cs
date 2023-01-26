@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using UnityEngine.EventSystems;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     Battlefield Zone.

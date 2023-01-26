@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     public class UiMotionRotationCard : UiMotionBaseCard
     {

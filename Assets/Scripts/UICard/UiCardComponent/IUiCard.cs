@@ -1,6 +1,6 @@
 ﻿using Patterns.StateMachine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
 	/// <summary>
 	///     A complete UI card.
@@ -19,7 +19,7 @@ namespace Tools.UI.Card
 		EnumTypes.CardHowToUses CardHowToUse { get; }
 
 		void Init();
-		void Destroy();
+		void Clear();
 
 		void Disable();
         void Enable();

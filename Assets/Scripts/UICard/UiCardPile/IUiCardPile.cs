@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     A pile of cards.

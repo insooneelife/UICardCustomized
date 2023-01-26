@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     Notifies the hand when the UI component is changed.

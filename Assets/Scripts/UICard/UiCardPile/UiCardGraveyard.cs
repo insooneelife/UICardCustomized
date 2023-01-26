@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     //------------------------------------------------------------------------------------------------------------------
 
@@ -16,6 +18,8 @@ namespace Tools.UI.Card
 
 		[SerializeField]
 		Pool.SetPooler cardPool;
+
+		[SerializeField] UiCardParameters parameters;
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -44,6 +48,8 @@ namespace Tools.UI.Card
 			}
 
 			AddCard(card);
+
+			Sort(Cards);
 		}
 
         //--------------------------------------------------------------------------------------------------------------
@@ -93,7 +99,7 @@ namespace Tools.UI.Card
 
 			card.Movement.OnFinishMotion -= OnCardArrived;
 
-			card.Destroy();
+			card.Clear();
 
 			Cards.Remove(card);
 
@@ -103,8 +109,28 @@ namespace Tools.UI.Card
 			NotifyPileChange();
         }
 
-        #endregion
+		#endregion
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+
+		private void Sort( List<IUiCard> cards)
+		{
+			var lastPos = cards.Count - 1;
+			var lastCard = cards[lastPos];
+			var gravPos = graveyardPosition.position + new Vector3(0, 0, -5);
+			var backGravPos = graveyardPosition.position;
+
+			//move last
+			lastCard.MoveToWithZ(gravPos, parameters.MovementSpeed);
+
+			//move others
+			for (var i = 0; i < cards.Count - 1; i++)
+			{
+				var card = cards[i];
+				card.MoveToWithZ(backGravPos, parameters.MovementSpeed);
+			}
+
+		}
+
+		//--------------------------------------------------------------------------------------------------------------
+	}
 }

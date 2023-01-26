@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     GameController hand zone.

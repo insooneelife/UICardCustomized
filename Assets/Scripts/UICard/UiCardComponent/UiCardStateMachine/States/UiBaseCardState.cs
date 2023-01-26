@@ -1,151 +1,153 @@
 ﻿using Patterns.StateMachine;
 using System.Diagnostics;
 
-namespace Tools.UI.Card
+namespace UICard
 {
-    /// <summary>
-    ///     Base UI Card State.
-    /// </summary>
-    public abstract class UiBaseCardState : IState
-    {
-        const int LayerToRenderNormal = 0;
-        const int LayerToRenderTop = 1;
 
-        //--------------------------------------------------------------------------------------------------------------
+	// Base UI Card State.
+	public abstract class UiBaseCardState : IState
+	{
+		const int LayerToRenderNormal = 0;
+		const int LayerToRenderTop = 1;
 
-        #region Constructor
+		private IUiCard _handler;
+		private UiCardParameters _parameters;
+		private BaseStateMachine _fsm;
+		private bool _isInitialized;
 
-        protected UiBaseCardState(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters)
-        {
-            Fsm = fsm;
-            Handler = handler;
-            Parameters = parameters;
-            IsInitialized = true;
-        }
+		protected IUiCard Handler
+		{
+			get { return _handler; }
+		}
 
-        #endregion
+		protected UiCardParameters Parameters
+		{
+			get { return _parameters; }
+		}
 
-        protected IUiCard Handler { get; }
-        protected UiCardParameters Parameters { get; }
-        protected BaseStateMachine Fsm { get; }
-        public bool IsInitialized { get; }
+		protected BaseStateMachine Fsm
+		{
+			get { return _fsm; }
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
+		public bool IsInitialized
+		{
+			get { return _isInitialized; }
+		}
 
-        #region Operations
-
-        /// <summary>
-        ///     Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
-        /// </summary>
-        protected virtual void MakeRenderFirst()
-        {
-            for (var i = 0; i < Handler.Renderers.Length; i++)
-                Handler.Renderers[i].sortingOrder = LayerToRenderTop;
-        }
+		protected UiBaseCardState(IUiCard handler, BaseStateMachine fsm, UiCardParameters parameters)
+		{
+			_fsm = fsm;
+			_handler = handler;
+			_parameters = parameters;
+			_isInitialized = true;
+		}
 
 
-        /// <summary>
-        ///     Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
-        /// </summary>
-        protected virtual void MakeRenderNormal()
-        {
-            for (var i = 0; i < Handler.Renderers.Length; i++)
-                if (Handler.Renderers[i])
-                    Handler.Renderers[i].sortingOrder = LayerToRenderNormal;
-        }
 
-        /// <summary>
-        ///     Enables the card entirely. Collision, Rigidybody and adds Alpha.
-        /// </summary>
-        protected void Enable()
-        {
-            if (Handler.Collider)
-                EnableCollision();
-            if (Handler.Rigidbody)
-                Handler.Rigidbody.Sleep();
+		// Renders the textures in the first layer. Each card state is responsible to handle its own layer activity.
+		protected virtual void MakeRenderFirst()
+		{
+			for (var i = 0; i < _handler.Renderers.Length; i++)
+				_handler.Renderers[i].sortingOrder = LayerToRenderTop;
+		}
 
-            MakeRenderNormal();
-            RemoveAllTransparency();
-        }
 
-        /// <summary>
-        ///     Disables the card entirely. Collision, Rigidybody and adds Alpha.
-        /// </summary>
-        protected virtual void Disable()
-        {
-            DisableCollision();
-            Handler.Rigidbody.Sleep();
-            MakeRenderNormal();
-            foreach (var renderer in Handler.Renderers)
-            {
-                var myColor = renderer.color;
-                myColor.a = Parameters.DisabledAlpha;
-                renderer.color = myColor;
-            }
-        }
 
-		/// <summary>
-		///     Disables the collision with this card.
-		/// </summary>
+		// Renders the textures in the regular layer. Each card state is responsible to handle its own layer activity.
+		protected virtual void MakeRenderNormal()
+		{
+			for (var i = 0; i < _handler.Renderers.Length; i++)
+				if (_handler.Renderers[i])
+					_handler.Renderers[i].sortingOrder = LayerToRenderNormal;
+		}
+
+		// Enables the card entirely. Collision, Rigidybody and adds Alpha.
+
+		protected void Enable()
+		{
+			if (_handler.Collider)
+				EnableCollision();
+			if (_handler.Rigidbody)
+				_handler.Rigidbody.Sleep();
+
+			MakeRenderNormal();
+			RemoveAllTransparency();
+		}
+
+
+		// Disables the card entirely. Collision, Rigidybody and adds Alpha.
+
+		protected virtual void Disable()
+		{
+			DisableCollision();
+			_handler.Rigidbody.Sleep();
+			MakeRenderNormal();
+			foreach (var renderer in _handler.Renderers)
+			{
+				var myColor = renderer.color;
+				myColor.a = Parameters.DisabledAlpha;
+				renderer.color = myColor;
+			}
+		}
+
+
+		// Disables the collision with this card.
+
 		protected virtual void DisableCollision()
 		{
-			Handler.Collider.enabled = false;
+			_handler.Collider.enabled = false;
 		}
 
-		/// <summary>
-		///     Enables the collision with this card.
-		/// </summary>
+
+		// Enables the collision with this card.
+
 		protected virtual void EnableCollision()
 		{
-			Handler.Collider.enabled = true;
+			_handler.Collider.enabled = true;
 		}
 
-        /// <summary>
-        ///     Remove any alpha channel in all renderers.
-        /// </summary>
-        protected void RemoveAllTransparency()
-        {
-            foreach (var renderer in Handler.Renderers)
-                if (renderer)
-                {
-                    var myColor = renderer.color;
-                    myColor.a = 1;
-                    renderer.color = myColor;
-                }
-        }
 
-        #endregion
+		// Remove any alpha channel in all renderers.
+		protected void RemoveAllTransparency()
+		{
+			foreach (var renderer in _handler.Renderers)
+				if (renderer)
+				{
+					var myColor = renderer.color;
+					myColor.a = 1;
+					renderer.color = myColor;
+				}
+		}
 
-        //--------------------------------------------------------------------------------------------------------------
 
-        #region FSM
+		#region FSM
 
-        void IState.OnInitialize()
-        {
-        }
+		void IState.OnInitialize()
+		{
+		}
 
-        public virtual void OnEnterState()
-        {
-        }
+		public virtual void OnEnterState()
+		{
+		}
 
-        public virtual void OnExitState()
-        {
-        }
+		public virtual void OnExitState()
+		{
+		}
 
-        public virtual void OnUpdate()
-        {
-        }
+		public virtual void OnUpdate()
+		{
+		}
 
-        public virtual void OnNextState(IState next)
-        {
-        }
+		public virtual void OnNextState(IState next)
+		{
+		}
 
-        public virtual void OnClear()
-        {
-        }
+		public virtual void OnClear()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        //--------------------------------------------------------------------------------------------------------------
-    }
+	}
 }

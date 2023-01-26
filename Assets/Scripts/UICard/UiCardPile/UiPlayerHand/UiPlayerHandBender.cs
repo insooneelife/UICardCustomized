@@ -3,7 +3,7 @@ using Extensions;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Tools.UI.Card
+namespace UICard
 {
 	public class BendData
 	{

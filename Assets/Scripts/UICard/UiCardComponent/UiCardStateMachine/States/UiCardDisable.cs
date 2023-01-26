@@ -1,6 +1,6 @@
 ﻿using Patterns.StateMachine;
 
-namespace Tools.UI.Card
+namespace UICard
 {
     /// <summary>
     ///     This state disables the collider of the card.
