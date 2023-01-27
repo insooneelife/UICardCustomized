@@ -21,8 +21,8 @@ public class UiCardComponentUI : UiCardComponentBase
 	{
 		base.Awake();
 
-		_graphics = GetComponentsInChildren<Graphic>();
-		GameObject.Instantiate(_uiPrefab, _canvas.transform);		
+		GameObject.Instantiate(_uiPrefab, _canvas.transform);
+		_graphics = GetComponentsInChildren<Graphic>();	
 	}
 
 

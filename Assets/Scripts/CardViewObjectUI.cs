@@ -48,10 +48,7 @@ public class CardViewObjectUI
 
 	[SerializeField]
 	protected GameObject _cardHighlightObject;
-
-	[SerializeField]
-	private GraphicRaycaster _graphicRaycaster;
-
+	
 	[SerializeField]
 	private GameObject _eventSucker;
 	
@@ -123,12 +120,7 @@ public class CardViewObjectUI
 	{
 		get { return _cardHighlightObject; }
 	}
-
-	public GraphicRaycaster GraphicRaycaster
-	{
-		get { return _graphicRaycaster; }
-	}
-
+	
 	public GameObject EventSucker
 	{
 		get { return _eventSucker; }
